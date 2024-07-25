@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bu506fv4xr7e5"]
+[gd_scene load_steps=10 format=3 uid="uid://bu506fv4xr7e5"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_lonwx"]
 [ext_resource type="PackedScene" uid="uid://cfcyp6ygd7myq" path="res://scenes/card.tscn" id="2_mwtr0"]
+[ext_resource type="PackedScene" uid="uid://0mvk1fobbefx" path="res://scenes/slot.tscn" id="3_4jq0p"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pgm3m"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -17,10 +18,15 @@ tonemap_mode = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_m024c"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o8cp0"]
+albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D"]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("slot1", "slot2")]
 script = ExtResource("1_lonwx")
+slot1 = NodePath("World/Slot")
+slot2 = NodePath("World/Slot2")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ehwq6")
@@ -83,6 +89,7 @@ text = "Return to Menu"
 transform = Transform3D(12, 0, 0, 0, 1, 0, 0, 0, 10, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_m024c")
 skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_o8cp0")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="World/GameBoard"]
 
@@ -93,3 +100,9 @@ shape = SubResource("BoxShape3D_tut34")
 transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 0, 5, 3.5)
 
 [node name="Card" parent="World" instance=ExtResource("2_mwtr0")]
+
+[node name="Slot" parent="World" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -2.91569, 0, -0.104694)
+
+[node name="Slot2" parent="World" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 2.6897, 0, -0.104694)

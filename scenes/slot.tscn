@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3 uid="uid://0mvk1fobbefx"]
+
+[ext_resource type="Script" path="res://scripts/slot.gd" id="1_nqfmu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t5dn5"]
+size = Vector3(1.1, 1, 1.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vv3ns"]
+size = Vector3(0.02, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1pq23"]
+albedo_color = Color(0, 0, 0, 1)
+
+[node name="Slot" type="Node3D"]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 0, 0, 0)
+script = ExtResource("1_nqfmu")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_t5dn5")
+
+[node name="Border" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Border"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("BoxMesh_vv3ns")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_1pq23")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Border"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+mesh = SubResource("BoxMesh_vv3ns")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_1pq23")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Border"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0.5)
+mesh = SubResource("BoxMesh_vv3ns")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_1pq23")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Border"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, -0.5)
+mesh = SubResource("BoxMesh_vv3ns")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_1pq23")
+
+[connection signal="mouse_entered" from="Area3D" to="." method="_on_area_3d_mouse_entered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="_on_area_3d_mouse_exited"]

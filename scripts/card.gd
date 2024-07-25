@@ -1,4 +1,4 @@
-extends MeshInstance3D
+class_name Card extends MeshInstance3D
 
 @onready var _name_label = $NameLabel
 @onready var _energy_label = $EnergyLabel
@@ -10,22 +10,13 @@ var is_hovered = false
 var is_selected = false
 
 func _process(delta):
-	#var random = randi_range(0, 2)
-	#var col
-	#match random:
-		#0:
-			#col = Color(1,1,0)
-		#1:
-			#col = Color(0,1,0)
-		#2:
-			#col = Color(0,1,1)
-	#
-	#change_colour(col)
 	# Selection
-	if is_hovered && Input.is_action_pressed("mouse_left"):
+	if is_hovered && Input.is_action_just_pressed("mouse_left"):
 		is_selected = true
-	if is_selected && Input.is_action_pressed("mouse_right"):
+		Signals.select_card.emit(self)
+	if is_selected && Input.is_action_just_pressed("mouse_right"):
 		is_selected = false
+		Signals.select_card.emit(null)
 	
 	# Highlighting
 	if is_selected: 
