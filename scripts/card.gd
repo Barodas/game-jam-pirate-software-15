@@ -11,6 +11,12 @@ var is_hovered = false
 var is_selected = false
 
 func _ready():
+	if data:
+		_name_label.text = data.name
+		_energy_label.text = "Energy: " + str(data.energy)
+		_gold_label.text = "Gold: " + str(data.gold)
+		print("Initialised a ", data.name, " Card")
+	
 	Signals.select_card.connect(_on_select_card_signal)
 
 func _process(delta):
@@ -45,12 +51,9 @@ func change_hovered_colour(col:Color):
 	mat.albedo_color = col
 
 static func create(info: CardData):
-	var scene = load("res://scenes/card.tscn")
-	var instance = scene.instance()
+	var instance = preload("res://scenes/card.tscn").instantiate()
 	instance.data = info
-	instance._name_label.text = info.name
-	instance._energy_label.text = info.energy
-	instance._gold_label.text = info.gold
+	print("Created a Card")
 	return instance
 
 func _on_select_card_signal(card:Card):

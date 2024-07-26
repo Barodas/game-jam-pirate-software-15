@@ -23,10 +23,14 @@ albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("slot1", "slot2")]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "distill_slot1", "distill_slot2", "material_slots", "reagent_slots", "potion_slots")]
 script = ExtResource("1_lonwx")
-slot1 = NodePath("World/Slot")
-slot2 = NodePath("World/Slot2")
+refine_slot = NodePath("World/RefineSlot")
+distill_slot1 = NodePath("World/DistillSlot1")
+distill_slot2 = NodePath("World/DistillSlot2")
+material_slots = [NodePath("World/Materials/Slot1"), NodePath("World/Materials/Slot2"), NodePath("World/Materials/Slot3"), NodePath("World/Materials/Slot4"), NodePath("World/Materials/Slot5"), NodePath("World/Materials/Slot6")]
+reagent_slots = [NodePath("World/Reagents/Slot1"), NodePath("World/Reagents/Slot2"), NodePath("World/Reagents/Slot3")]
+potion_slots = [NodePath("World/Potions/Slot1"), NodePath("World/Potions/Slot2"), NodePath("World/Potions/Slot3")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ehwq6")
@@ -104,11 +108,77 @@ transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 
 [node name="Card2" parent="World" instance=ExtResource("2_mwtr0")]
 transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1.5, 1.18353, 0, -2.52857)
 
-[node name="Slot" parent="World" instance=ExtResource("3_4jq0p")]
-transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -2.91569, 0, -0.104694)
+[node name="RefineSlot" parent="World" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -3.62523, 0, -0.979769)
 
-[node name="Slot2" parent="World" instance=ExtResource("3_4jq0p")]
-transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 2.6897, 0, -0.104694)
+[node name="DistillSlot1" parent="World" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 0.0592017, 0, -0.979769)
 
-[node name="Slot3" parent="World" instance=ExtResource("3_4jq0p")]
-transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.42312, 0, 2.682)
+[node name="DistillSlot2" parent="World" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.4425, 0, -0.979769)
+
+[node name="Materials" type="Node3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19, 0, 0)
+
+[node name="Label3D" type="Label3D" parent="World/Materials"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -3.3, 0, 2.5)
+text = "Materials"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="Slot1" parent="World/Materials" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -3.3, 0, 3.6)
+
+[node name="Slot2" parent="World/Materials" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -1.9, 0, 3.6)
+
+[node name="Slot3" parent="World/Materials" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -0.5, 0, 3.6)
+
+[node name="Slot4" parent="World/Materials" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 0.902987, 0, 3.6)
+
+[node name="Slot5" parent="World/Materials" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 2.32014, 0, 3.6)
+
+[node name="Slot6" parent="World/Materials" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 3.6986, 0, 3.6)
+
+[node name="Reagents" type="Node3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33, 0, 0)
+
+[node name="Label3D" type="Label3D" parent="World/Reagents"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -3.7, 0, 0.325)
+text = "Reagents"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="Slot1" parent="World/Reagents" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -3.68461, 0, 1.40684)
+
+[node name="Slot2" parent="World/Reagents" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -2.28461, 0, 1.40684)
+
+[node name="Slot3" parent="World/Reagents" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -0.884614, 0, 1.40684)
+
+[node name="Potions" type="Node3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, 0, 0)
+
+[node name="Label3D" type="Label3D" parent="World/Potions"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.2, 0, 0.325)
+text = "Potions"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="Slot1" parent="World/Potions" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.34983, 0, 1.43483)
+
+[node name="Slot2" parent="World/Potions" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 2.76699, 0, 1.43483)
+
+[node name="Slot3" parent="World/Potions" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 4.14545, 0, 1.43483)

@@ -3,17 +3,21 @@ extends Node3D
 enum CARD_TYPE {HERB_HEALTH, DUST_HEALTH, POTION_HEALTH}
 
 var selected_card: Card
-@export var slot1: Slot
-@export var slot2: Slot
+@export var refine_slot: Slot
+@export var distill_slot1: Slot
+@export var distill_slot2: Slot
+@export var material_slots: Array[Slot]
+@export var reagent_slots: Array[Slot]
+@export var potion_slots: Array[Slot]
 
 func create_card(type:CARD_TYPE):
-	var scene = load("res://scenes/card.tscn")
-	var instance = scene.instance()
-	instance.name
 	var info
 	match type:
 		CARD_TYPE.HERB_HEALTH:
 			info = CardData.create("Green Herb", 1, 0)
+	var new_card = Card.create(info)
+	add_child(new_card)
+	return new_card
 
 func _unhandled_input(event):
 	if Input.is_action_just_pressed("quit"):
@@ -24,6 +28,11 @@ func _ready():
 	
 	Signals.click_card.connect(_on_click_card_signal)
 	Signals.click_slot.connect(_on_click_slot_signal)
+	
+	# Populate Hand
+	material_slots[0].assign_card(create_card(CARD_TYPE.HERB_HEALTH))
+	material_slots[1].assign_card(create_card(CARD_TYPE.HERB_HEALTH))
+	material_slots[2].assign_card(create_card(CARD_TYPE.HERB_HEALTH))
 
 func _process(delta):
 	if Input.is_action_just_pressed("mouse_right"):
