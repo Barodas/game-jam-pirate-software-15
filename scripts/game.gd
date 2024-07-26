@@ -1,7 +1,5 @@
 extends Node3D
 
-enum CARD_TYPE {HERB_HEALTH, DUST_HEALTH, POTION_HEALTH}
-
 var selected_card: Card
 var selected_slot: Slot
 @export var refine_slot: Slot
@@ -11,11 +9,18 @@ var selected_slot: Slot
 @export var reagent_slots: Array[Slot]
 @export var potion_slots: Array[Slot]
 
-func create_card(type:CARD_TYPE):
+func create_card(type:Constants.ID):
 	var info
 	match type:
-		CARD_TYPE.HERB_HEALTH:
-			info = CardData.create("Green Herb", 1, 0)
+		Constants.ID.HERB_HEALTH:
+			info = CardData.create("Green Herb",Constants.CATEGORY.MATERIAL,
+			 Constants.TYPE.HEALTH, 1, 0)
+		Constants.ID.DUST_HEALTH:
+			info = CardData.create("Regen Dust",Constants.CATEGORY.REAGENT,
+			 Constants.TYPE.HEALTH, 1, 0)
+		Constants.ID.POTION_HEALTH:
+			info = CardData.create("Health Potion",Constants.CATEGORY.POTION,
+			 Constants.TYPE.HEALTH, 1, 0)
 	var new_card = Card.create(info)
 	add_child(new_card)
 	return new_card
@@ -29,9 +34,9 @@ func _ready():
 	Signals.click_slot.connect(_on_click_slot_signal)
 	
 	# Populate Hand
-	material_slots[0].assign_card(create_card(CARD_TYPE.HERB_HEALTH))
-	material_slots[1].assign_card(create_card(CARD_TYPE.HERB_HEALTH))
-	material_slots[2].assign_card(create_card(CARD_TYPE.HERB_HEALTH))
+	material_slots[0].assign_card(create_card(Constants.ID.HERB_HEALTH))
+	material_slots[1].assign_card(create_card(Constants.ID.HERB_HEALTH))
+	material_slots[2].assign_card(create_card(Constants.ID.HERB_HEALTH))
 
 func _process(delta):
 	if Input.is_action_just_pressed("mouse_right"):
@@ -45,7 +50,9 @@ func _on_click_slot_signal(slot):
 		selected_slot = slot
 		slot.select_slot(true)
 	elif selected_slot != null && selected_slot != slot:
-		if slot.has_card():
+		if slot.category != selected_slot.category:
+			print("Category mismatch between selection and target slots")
+		elif slot.has_card():
 			print("Swapping selected slot: ", selected_slot.name, " with slot: ", slot.name)
 			var card_to_swap = slot.card
 			slot.assign_card(selected_slot.card)

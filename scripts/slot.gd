@@ -1,5 +1,6 @@
 class_name Slot extends Node3D
 
+@export var category: Constants.CATEGORY = Constants.CATEGORY.MATERIAL
 var card: Card
 var is_hovered: bool = false
 var is_selected: bool = false
