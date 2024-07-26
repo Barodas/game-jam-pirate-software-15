@@ -10,20 +10,20 @@ var data
 var is_hovered = false
 var is_selected = false
 
+static func create(info: CardData):
+	var instance = preload("res://scenes/card.tscn").instantiate()
+	instance.data = info
+	print("Created a Card")
+	return instance
+
 func _ready():
 	if data:
 		_name_label.text = data.name
 		_energy_label.text = "Energy: " + str(data.energy)
 		_gold_label.text = "Gold: " + str(data.gold)
 		print("Initialised a ", data.name, " Card")
-	
-	Signals.select_card.connect(_on_select_card_signal)
 
 func _process(delta):
-	# Selection
-	if is_hovered && Input.is_action_just_pressed("mouse_left"):
-		Signals.click_card.emit(self)
-	
 	# Highlighting	
 	if is_hovered:
 		_border_highlight.show()
@@ -39,33 +39,10 @@ func _process(delta):
 			_border_selected.hide()
 			_border_highlight.hide()
 
-func _physics_process(delta):
-	#set_hovered(false)
-	pass
-
-func set_hovered(state: bool):
-	is_hovered = state
+func set_state(hovered: bool, selected: bool):
+	is_hovered = hovered
+	is_selected = selected
 
 func change_hovered_colour(col:Color):
 	var mat = _border_highlight.get_active_material(0)
 	mat.albedo_color = col
-
-static func create(info: CardData):
-	var instance = preload("res://scenes/card.tscn").instantiate()
-	instance.data = info
-	print("Created a Card")
-	return instance
-
-func _on_select_card_signal(card:Card):
-	if card == self:
-		is_selected = true
-	else:
-		is_selected = false
-
-func _on_static_body_3d_mouse_entered():
-	is_hovered = true
-	#print("Card Mouse entered")
-
-func _on_static_body_3d_mouse_exited():
-	is_hovered = false
-	#print("Card Mouse exited")

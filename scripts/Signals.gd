@@ -9,6 +9,6 @@ extends Node
 # Example Send
 #Signals.example_signal.emit(val, 0)
 
-signal select_card(card: Card)
-signal click_card(card: Card)
+#signal select_card(card: Card)
+#signal click_card(card: Card)
 signal click_slot(slot: Slot)

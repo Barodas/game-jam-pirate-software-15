@@ -3,6 +3,7 @@ extends Node3D
 enum CARD_TYPE {HERB_HEALTH, DUST_HEALTH, POTION_HEALTH}
 
 var selected_card: Card
+var selected_slot: Slot
 @export var refine_slot: Slot
 @export var distill_slot1: Slot
 @export var distill_slot2: Slot
@@ -25,8 +26,6 @@ func _unhandled_input(event):
 
 func _ready():
 	randomize()
-	
-	Signals.click_card.connect(_on_click_card_signal)
 	Signals.click_slot.connect(_on_click_slot_signal)
 	
 	# Populate Hand
@@ -36,43 +35,29 @@ func _ready():
 
 func _process(delta):
 	if Input.is_action_just_pressed("mouse_right"):
-		selected_card = null
-		Signals.select_card.emit(null)
-
-func _physics_process(delta):
-	#var space_state = get_world_3d().direct_space_state
-	#var cam = $World/Camera3D
-	#var mousepos = get_viewport().get_mouse_position()
-	#
-	#var origin = cam.project_ray_origin(mousepos)
-	#var end = origin + cam.project_ray_normal(mousepos) * 1000
-	#var query = PhysicsRayQueryParameters3D.create(origin, end)
-	#query.collide_with_areas = true
-	#
-	#var result = space_state.intersect_ray(query)
-	#print("Hit: ", result.collider.get_parent().name)
-	#if result.collider.get_parent().has_method("set_hovered"):
-	#	result.collider.get_parent().set_hovered(true)
-	pass
-
-func _on_click_card_signal(card):
-	if selected_card != null:
-		var selected_position = card.global_position
-		card.global_position = selected_card.global_position
-		selected_card.global_position = selected_position
-		selected_card = null
-		Signals.select_card.emit(null)
-	else:
-		selected_card = card
-		Signals.select_card.emit(selected_card)
+		selected_slot.select_slot(false)
+		selected_slot = null
 
 func _on_click_slot_signal(slot):
 	print("Click Slot received")
-	if selected_card != null:
-		print("Click Slot has card")
-		selected_card.global_position = slot.global_position
-		selected_card.is_selected = false
-		selected_card = null
+	if selected_slot == null && slot.has_card():
+		print("Selecting slot: ", slot.name)
+		selected_slot = slot
+		slot.select_slot(true)
+	elif selected_slot != null && selected_slot != slot:
+		if slot.has_card():
+			print("Swapping selected slot: ", selected_slot.name, " with slot: ", slot.name)
+			var card_to_swap = slot.card
+			slot.assign_card(selected_slot.card)
+			selected_slot.assign_card(card_to_swap)
+			selected_slot.select_slot(false)
+			selected_slot = null
+		else:
+			print("Moving card in selected slot: ", selected_slot.name, " to slot: ", slot.name)
+			slot.assign_card(selected_slot.card)
+			selected_slot.assign_card(null)
+			selected_slot.select_slot(false)
+			selected_slot = null
 
 func _on_return_to_menu_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/start_menu.tscn")
