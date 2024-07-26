@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://bu506fv4xr7e5"]
+[gd_scene load_steps=11 format=3 uid="uid://bu506fv4xr7e5"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_lonwx"]
 [ext_resource type="PackedScene" uid="uid://0mvk1fobbefx" path="res://scenes/slot.tscn" id="3_4jq0p"]
+[ext_resource type="PackedScene" uid="uid://ce4txtp5sdg6e" path="res://scenes/clickable_text.tscn" id="3_olj2j"]
+[ext_resource type="PackedScene" uid="uid://c3s0qk2jfmure" path="res://scenes/progress_bar.tscn" id="4_w04wk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pgm3m"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -22,9 +24,11 @@ albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "distill_slot1", "distill_slot2", "material_slots", "reagent_slots", "potion_slots")]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "material_slots", "reagent_slots", "potion_slots")]
 script = ExtResource("1_lonwx")
-refine_slot = NodePath("World/RefineSlot")
+refine_slot = NodePath("World/Refinery/RefineSlot")
+refine_button = NodePath("World/Refinery/RefineButton")
+refine_progress = NodePath("World/Refinery/RefineProgressBar")
 distill_slot1 = NodePath("World/DistillSlot1")
 distill_slot2 = NodePath("World/DistillSlot2")
 material_slots = [NodePath("World/Materials/MaterialSlot1"), NodePath("World/Materials/MaterialSlot2"), NodePath("World/Materials/MaterialSlot3"), NodePath("World/Materials/MaterialSlot4"), NodePath("World/Materials/MaterialSlot5"), NodePath("World/Materials/MaterialSlot6")]
@@ -102,22 +106,46 @@ shape = SubResource("BoxShape3D_tut34")
 [node name="Camera3D" type="Camera3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 0, 5, 3.5)
 
-[node name="RefineSlot" parent="World" instance=ExtResource("3_4jq0p")]
+[node name="Refinery" type="Node3D" parent="World"]
+
+[node name="RefineSlot" parent="World/Refinery" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -3.62523, 0, -0.979769)
 
+[node name="RefineLabel" type="Label3D" parent="World/Refinery"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2.2, 0.01, -1.4)
+text = "Refine
+Materials"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="RefineButton" parent="World/Refinery" instance=ExtResource("3_olj2j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.15793, 0, -0.365608)
+
+[node name="RefineProgressBar" parent="World/Refinery" instance=ExtResource("4_w04wk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.15, 0, -0.15)
+
 [node name="DistillSlot1" parent="World" instance=ExtResource("3_4jq0p")]
-transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 0.0592017, 0, -0.979769)
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 0.359278, 0, -0.979769)
 category = 1
 
 [node name="DistillSlot2" parent="World" instance=ExtResource("3_4jq0p")]
-transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.4425, 0, -0.979769)
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.74258, 0, -0.979769)
 category = 1
+
+[node name="DistillLabel" type="Label3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 3.10008, 0.01, -1.4)
+text = "Distill
+Reagents"
+font_size = 40
+outline_size = 10
+uppercase = true
 
 [node name="Materials" type="Node3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19, 0, 0)
 
 [node name="Label3D" type="Label3D" parent="World/Materials"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -3.3, 0, 2.5)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -3.3, 0.01, 2.5)
 text = "Materials"
 font_size = 40
 outline_size = 10
@@ -145,7 +173,7 @@ transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 3.6986, 0, 3.6)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33, 0, 0)
 
 [node name="Label3D" type="Label3D" parent="World/Reagents"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -3.7, 0, 0.325)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -3.7, 0.01, 0.325)
 text = "Reagents"
 font_size = 40
 outline_size = 10
@@ -167,7 +195,7 @@ category = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, 0, 0)
 
 [node name="Label3D" type="Label3D" parent="World/Potions"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.2, 0, 0.325)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.2, 0.01, 0.325)
 text = "Potions"
 font_size = 40
 outline_size = 10

@@ -3,6 +3,8 @@ extends Node3D
 var selected_card: Card
 var selected_slot: Slot
 @export var refine_slot: Slot
+@export var refine_button: ClickableText
+@export var refine_progress: ProgressBar3D
 @export var distill_slot1: Slot
 @export var distill_slot2: Slot
 @export var material_slots: Array[Slot]
@@ -32,6 +34,11 @@ func _unhandled_input(event):
 func _ready():
 	randomize()
 	Signals.click_slot.connect(_on_click_slot_signal)
+	Signals.click_button.connect(_on_click_button_signal)
+	Signals.progress_bar_complete.connect(_on_progress_bar_complete_signal)
+	
+	# Initialise Board State
+	refine_button.hide()
 	
 	# Populate Hand
 	material_slots[0].assign_card(create_card(Constants.ID.HERB_HEALTH))
@@ -42,6 +49,11 @@ func _process(delta):
 	if Input.is_action_just_pressed("mouse_right"):
 		selected_slot.select_slot(false)
 		selected_slot = null
+	
+	if refine_slot.has_card():
+		refine_button.show()
+	else:
+		refine_button.hide()
 
 func _on_click_slot_signal(slot):
 	print("Click Slot received")
@@ -65,6 +77,31 @@ func _on_click_slot_signal(slot):
 			selected_slot.assign_card(null)
 			selected_slot.select_slot(false)
 			selected_slot = null
+
+func _on_click_button_signal(button):
+	if button == refine_button:
+		if !refine_slot.has_card():
+			print("Refine button pressed without a card in refine slot")
+		refine_progress.start_timer(3.0)
+		# TODO: Lock refine slot to prevent removing card
+
+func _on_progress_bar_complete_signal(bar):
+	if bar == refine_progress:
+		if refine_slot.has_card():
+			# TODO: Unlock refine slot
+			refine_material(refine_slot.card.data.type)
+			refine_slot.card.queue_free()
+			#refine_slot.assign_card(null)
+
+func refine_material(type:Constants.TYPE):
+	var new_card
+	match type:
+		Constants.TYPE.HEALTH:
+			new_card = create_card(Constants.ID.DUST_HEALTH)
+	for slot in reagent_slots:
+		if !slot.has_card():
+			slot.assign_card(new_card)
+			break
 
 func _on_return_to_menu_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/start_menu.tscn")

@@ -12,3 +12,5 @@ extends Node
 #signal select_card(card: Card)
 #signal click_card(card: Card)
 signal click_slot(slot: Slot)
+signal click_button(button: ClickableText)
+signal progress_bar_complete(bar: ProgressBar3D)
