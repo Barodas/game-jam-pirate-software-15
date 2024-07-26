@@ -22,8 +22,13 @@ func _unhandled_input(event):
 func _ready():
 	randomize()
 	
-	Signals.select_card.connect(_on_card_select_signal)
+	Signals.click_card.connect(_on_click_card_signal)
 	Signals.click_slot.connect(_on_click_slot_signal)
+
+func _process(delta):
+	if Input.is_action_just_pressed("mouse_right"):
+		selected_card = null
+		Signals.select_card.emit(null)
 
 func _physics_process(delta):
 	#var space_state = get_world_3d().direct_space_state
@@ -41,8 +46,16 @@ func _physics_process(delta):
 	#	result.collider.get_parent().set_hovered(true)
 	pass
 
-func _on_card_select_signal(card):
-	selected_card = card
+func _on_click_card_signal(card):
+	if selected_card != null:
+		var selected_position = card.global_position
+		card.global_position = selected_card.global_position
+		selected_card.global_position = selected_position
+		selected_card = null
+		Signals.select_card.emit(null)
+	else:
+		selected_card = card
+		Signals.select_card.emit(selected_card)
 
 func _on_click_slot_signal(slot):
 	print("Click Slot received")

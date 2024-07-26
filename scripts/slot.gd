@@ -10,8 +10,8 @@ func _process(delta):
 
 func _on_area_3d_mouse_entered():
 	is_hovered = true
-	print("Slot Mouse entered")
+	#print("Slot Mouse entered")
 
 func _on_area_3d_mouse_exited():
 	is_hovered = false
-	print("Slot Mouse exited")
+	#print("Slot Mouse exited")

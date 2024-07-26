@@ -101,8 +101,14 @@ transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 
 
 [node name="Card" parent="World" instance=ExtResource("2_mwtr0")]
 
+[node name="Card2" parent="World" instance=ExtResource("2_mwtr0")]
+transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1.5, 1.18353, 0, -2.52857)
+
 [node name="Slot" parent="World" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -2.91569, 0, -0.104694)
 
 [node name="Slot2" parent="World" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 2.6897, 0, -0.104694)
+
+[node name="Slot3" parent="World" instance=ExtResource("3_4jq0p")]
+transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.42312, 0, 2.682)
