@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cfcyp6ygd7myq"]
+[gd_scene load_steps=8 format=3 uid="uid://cfcyp6ygd7myq"]
 
 [ext_resource type="Script" path="res://scripts/card.gd" id="1_5kcb4"]
 
@@ -14,6 +14,9 @@ albedo_color = Color(0, 0, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dh820"]
 albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7fmmv"]
+albedo_color = Color(1, 0, 0, 1)
 
 [node name="Card" type="MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1.5, 0, 0, 0)
@@ -51,4 +54,9 @@ mesh = SubResource("BoxMesh_clpln")
 [node name="BorderSelected" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.15, 0, 0, 0, 0.8, 0, 0, 0, 1.15, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_dh820")
+mesh = SubResource("BoxMesh_clpln")
+
+[node name="BorderLocked" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.15, 0, 0, 0, 0.8, 0, 0, 0, 1.15, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_7fmmv")
 mesh = SubResource("BoxMesh_clpln")

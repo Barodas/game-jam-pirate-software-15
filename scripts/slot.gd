@@ -4,6 +4,7 @@ class_name Slot extends Node3D
 var card: Card
 var is_hovered: bool = false
 var is_selected: bool = false
+var is_locked: bool = false
 
 func _process(delta):
 	# Selection
@@ -13,9 +14,13 @@ func _process(delta):
 func has_card():
 	return card != null
 
+func set_lock(state):
+	is_locked = state
+	update_card()
+
 func update_card():
 	if has_card():
-		card.set_state(is_hovered, is_selected)
+		card.set_state(is_hovered, is_selected, is_locked)
 
 func assign_card(assigned_card: Card):
 	card = assigned_card

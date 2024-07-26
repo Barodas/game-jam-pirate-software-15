@@ -5,10 +5,12 @@ class_name Card extends MeshInstance3D
 @onready var _gold_label = $GoldLabel
 @onready var _border_highlight = $BorderHighlight
 @onready var _border_selected = $BorderSelected
+@onready var _border_locked = $BorderLocked
 
 var data
 var is_hovered = false
 var is_selected = false
+var is_locked = false
 
 static func create(info: CardData):
 	var instance = preload("res://scenes/card.tscn").instantiate()
@@ -24,8 +26,13 @@ func _ready():
 		print("Initialised a ", data.name, " Card")
 
 func _process(delta):
-	# Highlighting	
-	if is_hovered:
+	# Highlighting
+	_border_locked.hide()
+	if is_locked:
+		_border_locked.show()
+		_border_highlight.hide()
+		_border_selected.hide()
+	elif is_hovered:
 		_border_highlight.show()
 		_border_selected.hide()
 		if is_selected:
@@ -39,9 +46,10 @@ func _process(delta):
 			_border_selected.hide()
 			_border_highlight.hide()
 
-func set_state(hovered: bool, selected: bool):
+func set_state(hovered: bool, selected: bool, locked: bool):
 	is_hovered = hovered
 	is_selected = selected
+	is_locked = locked
 
 func change_hovered_colour(col:Color):
 	var mat = _border_highlight.get_active_material(0)

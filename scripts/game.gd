@@ -7,6 +7,8 @@ var selected_slot: Slot
 @export var refine_progress: ProgressBar3D
 @export var distill_slot1: Slot
 @export var distill_slot2: Slot
+@export var distill_button: ClickableText
+@export var distill_progress: ProgressBar3D
 @export var material_slots: Array[Slot]
 @export var reagent_slots: Array[Slot]
 @export var potion_slots: Array[Slot]
@@ -54,10 +56,17 @@ func _process(delta):
 		refine_button.show()
 	else:
 		refine_button.hide()
+	
+	if distill_slot1.has_card() && distill_slot2.has_card():
+		distill_button.show()
+	else:
+		distill_button.hide()
 
 func _on_click_slot_signal(slot):
 	print("Click Slot received")
-	if selected_slot == null && slot.has_card():
+	if slot.is_locked:
+		print("Slot is locked, do not select/swap cards in this slot")
+	elif selected_slot == null && slot.has_card():
 		print("Selecting slot: ", slot.name)
 		selected_slot = slot
 		slot.select_slot(true)
@@ -82,23 +91,48 @@ func _on_click_button_signal(button):
 	if button == refine_button:
 		if !refine_slot.has_card():
 			print("Refine button pressed without a card in refine slot")
-		refine_progress.start_timer(3.0)
-		# TODO: Lock refine slot to prevent removing card
+		refine_progress.start_timer(2.0)
+		refine_slot.set_lock(true)
+	if button == distill_button:
+		if !distill_slot1.has_card() || !distill_slot1.has_card():
+			print("Distill button pressed without cards in distill slots")
+		distill_progress.start_timer(2.0)
+		distill_slot1.set_lock(true)
+		distill_slot2.set_lock(true)
 
 func _on_progress_bar_complete_signal(bar):
 	if bar == refine_progress:
 		if refine_slot.has_card():
-			# TODO: Unlock refine slot
+			refine_slot.set_lock(false)
 			refine_material(refine_slot.card.data.type)
 			refine_slot.card.queue_free()
-			#refine_slot.assign_card(null)
+	if bar == distill_progress:
+		if distill_slot1.has_card() && distill_slot2.has_card():
+			distill_slot1.set_lock(false)
+			distill_slot2.set_lock(false)
+			distill_reagents(distill_slot1.card.data.type, distill_slot2.card.data.type)
+			distill_slot1.card.queue_free()
+			distill_slot2.card.queue_free()
 
 func refine_material(type:Constants.TYPE):
 	var new_card
 	match type:
 		Constants.TYPE.HEALTH:
 			new_card = create_card(Constants.ID.DUST_HEALTH)
+	
 	for slot in reagent_slots:
+		if !slot.has_card():
+			slot.assign_card(new_card)
+			break
+
+func distill_reagents(type1:Constants.TYPE, type2:Constants.TYPE):
+	var new_card
+	match type1:
+		Constants.TYPE.HEALTH:
+			if type2 == Constants.TYPE.HEALTH:
+				new_card = create_card(Constants.ID.POTION_HEALTH)
+	
+	for slot in potion_slots:
 		if !slot.has_card():
 			slot.assign_card(new_card)
 			break
