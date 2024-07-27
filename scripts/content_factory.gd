@@ -46,4 +46,22 @@ static func generate_cards(turn:int):
 			cards.push_back(Card.create(create_card_data(get_random_material())))
 	return cards
 
+static func get_random_request():
+	var roll = randf_range(0,1)
+	if roll > 0.6:
+		return RequestData.create("Health Potion", Constants.TYPE.HEALTH, 4, 10)
+	elif roll > 0.2:
+		return RequestData.create("Mana Potion", Constants.TYPE.MANA, 6, 10)
+	else:
+		return RequestData.create("Stamina Potion", Constants.TYPE.STAMINA, 10, 20)
 
+static func generate_requests(turn:int):
+	var requests: Array[RequestData]
+	if turn == 1:
+		requests.push_back(RequestData.create("Health Potion", Constants.TYPE.HEALTH, 5, 10))
+	if turn == 2:
+		requests.push_back(RequestData.create("Mana Potion", Constants.TYPE.MANA, 5, 10))
+	if turn >= 3:
+		for i in 2:
+			requests.push_back(get_random_request())
+	return requests

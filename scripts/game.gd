@@ -114,13 +114,18 @@ func _ready():
 	set_renown(renown)
 	
 	generate_turn_cards()
-	requests[0].assign_request(RequestData.create(
-		"Health Potion", Constants.TYPE.HEALTH, 5, 10))
+	generate_turn_requests()
 
 func generate_turn_cards():
 	var cards = ContentFactory.generate_cards(turn)
 	for card in cards:
 		add_to_slot(material_slots, card)
+
+func generate_turn_requests():
+	var new_requests = ContentFactory.generate_requests(turn)
+	for request in new_requests:
+		request_queue.push_back(request)
+	populate_requests()
 
 func _process(delta):
 	if Input.is_action_just_pressed("mouse_right") && selected_slot != null:
@@ -182,7 +187,9 @@ func _on_click_button_signal(button):
 			distill_slot2.set_lock(true)
 	for request in requests:
 		if button == request._reject_button:
+			request.data = null
 			request.set_visibility(false)
+			populate_requests()
 	if button == end_turn_button:
 		# Prepare end of turn stats
 		end_turn_button.hide()
@@ -285,8 +292,9 @@ func _on_next_turn_button_pressed():
 	expenses = 0
 	set_energy(energy_cap)
 	generate_turn_cards()
-	if turn == 2:
-		request_queue.push_back(RequestData.create(
-			"Mana Potion", Constants.TYPE.MANA, 5, 10))
-		populate_requests()
+	generate_turn_requests()
+	#if turn == 2:
+		#request_queue.push_back(RequestData.create(
+			#"Mana Potion", Constants.TYPE.MANA, 5, 10))
+		#populate_requests()
 	end_turn_button.show()
