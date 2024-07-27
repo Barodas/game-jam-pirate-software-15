@@ -25,19 +25,25 @@ albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests")]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_cost_label", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_cost_label", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests", "end_turn_button", "energy_label", "gold_label", "renown_label")]
 script = ExtResource("1_lonwx")
 refine_slot = NodePath("World/Refinery/RefineSlot")
+refine_cost_label = NodePath("World/Refinery/RefineCostLabel")
 refine_button = NodePath("World/Refinery/RefineButton")
 refine_progress = NodePath("World/Refinery/RefineProgressBar")
 distill_slot1 = NodePath("World/Distillery/DistillSlot1")
 distill_slot2 = NodePath("World/Distillery/DistillSlot2")
+distill_cost_label = NodePath("World/Distillery/DistillCostLabel")
 distill_button = NodePath("World/Distillery/DistillButton")
 distill_progress = NodePath("World/Distillery/DistillProgressBar2")
 material_slots = [NodePath("World/Materials/MaterialSlot1"), NodePath("World/Materials/MaterialSlot2"), NodePath("World/Materials/MaterialSlot3"), NodePath("World/Materials/MaterialSlot4"), NodePath("World/Materials/MaterialSlot5"), NodePath("World/Materials/MaterialSlot6")]
 reagent_slots = [NodePath("World/Reagents/ReagentSlot1"), NodePath("World/Reagents/ReagentSlot2"), NodePath("World/Reagents/ReagentSlot3")]
 potion_slots = [NodePath("World/Potions/PotionSlot1"), NodePath("World/Potions/PotionSlot2"), NodePath("World/Potions/PotionSlot3")]
 requests = [NodePath("World/Requests/Request1"), NodePath("World/Requests/Request2"), NodePath("World/Requests/Request3")]
+end_turn_button = NodePath("World/EndTurnButton")
+energy_label = NodePath("World/EnergyLabel")
+gold_label = NodePath("World/GoldLabel")
+renown_label = NodePath("World/RenownLabel")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ehwq6")
@@ -116,10 +122,17 @@ transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -3.62523, 0, -0.979769)
 
 [node name="RefineLabel" type="Label3D" parent="World/Refinery"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2.2, 0.01, -1.4)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2.2, 0.01, -1.6)
 text = "Refine
 Materials"
 font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="RefineCostLabel" type="Label3D" parent="World/Refinery"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2.2, 0.01, -0.81762)
+text = "Cost: 
+x Energy"
 outline_size = 10
 uppercase = true
 
@@ -140,10 +153,17 @@ transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.74258, 0, -0.979769)
 category = 1
 
 [node name="DistillLabel" type="Label3D" parent="World/Distillery"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 3.10008, 0.01, -1.4)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 3.1, 0.01, -1.6)
 text = "Distill
 Reagents"
 font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="DistillCostLabel" type="Label3D" parent="World/Distillery"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 3.01655, 0.01, -0.81762)
+text = "Cost: 
+x Energy"
 outline_size = 10
 uppercase = true
 
@@ -235,3 +255,27 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00492904, 0, -4.08488)
 
 [node name="Request3" parent="World/Requests" instance=ExtResource("5_0unim")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.34978, 0, -4.08488)
+
+[node name="EnergyLabel" type="Label3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 4.97542, 0.01, -0.904491)
+text = "Energy: 0"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="GoldLabel" type="Label3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 4.97542, 0.01, -1.26719)
+text = "Gold: 0"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="RenownLabel" type="Label3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 4.97542, 0.01, -1.64106)
+text = "Renown: 0"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="EndTurnButton" parent="World" instance=ExtResource("3_olj2j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.97963, 0, -0.3634)

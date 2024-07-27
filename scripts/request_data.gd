@@ -1,12 +1,14 @@
 class_name RequestData
 
 var name: String
-var item: Constants.ID
+var type: Constants.TYPE
 var gold: int
+var renown: int
 
-static func create(name: String, item:Constants.ID, gold):
+static func create(name: String, type:Constants.TYPE, gold:int, renown:int):
 	var request = RequestData.new()
 	request.name = name
-	request.item = item
+	request.type = type
 	request.gold = gold
+	request.renown = renown
 	return request

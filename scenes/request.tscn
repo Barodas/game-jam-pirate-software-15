@@ -30,7 +30,7 @@ font_size = 60
 outline_size = 10
 
 [node name="RequestLabel" type="Label3D" parent="Background"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.37722, 0.06, -0.994906)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.377, 0.06, -0.9)
 text = "Health Potion
 "
 font_size = 50
@@ -38,8 +38,24 @@ outline_size = 10
 horizontal_alignment = 0
 
 [node name="RewardLabel" type="Label3D" parent="Background"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.36901, 0.06, -0.542523)
-text = "Reward: x Gold"
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.194479, 0.06, -0.0234841)
+text = "Rewards
+"
+font_size = 50
+outline_size = 10
+horizontal_alignment = 0
+
+[node name="GoldLabel" type="Label3D" parent="Background"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.0271946, 0.06, 0.353138)
+text = "Gold: 0
+"
+font_size = 50
+outline_size = 10
+horizontal_alignment = 0
+
+[node name="RenownLabel" type="Label3D" parent="Background"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.0338172, 0.06, 0.66695)
+text = "Renown: 0"
 font_size = 50
 outline_size = 10
 horizontal_alignment = 0

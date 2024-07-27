@@ -24,10 +24,11 @@ mesh = SubResource("BoxMesh_55re0")
 script = ExtResource("1_5kcb4")
 
 [node name="NameLabel" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.51, -0.423)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.51, -0.473)
 text = "Card Name"
 font_size = 20
 outline_size = 8
+vertical_alignment = 0
 
 [node name="EnergyLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.51, 0.252)

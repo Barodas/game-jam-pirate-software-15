@@ -2,7 +2,8 @@ class_name Request extends Node3D
 
 @onready var _background = $Background
 @onready var _request_label = $Background/RequestLabel
-@onready var _reward_label = $Background/RewardLabel
+@onready var _gold_label = $Background/GoldLabel
+@onready var _renown_label = $Background/RenownLabel
 @onready var _slot = $Background/TurnInSlot
 @onready var _reject_button = $Background/ClickableText
 
@@ -27,5 +28,6 @@ func set_visibility(state:bool):
 func assign_request(assigned_request: RequestData):
 	data = assigned_request
 	_request_label.text = data.name
-	_reward_label.text = "Reward: " + str(data.gold) + " Gold"
+	_gold_label.text = "Gold: " + str(data.gold)
+	_renown_label.text = "Renown: " + str(data.renown)
 	set_visibility(true)
