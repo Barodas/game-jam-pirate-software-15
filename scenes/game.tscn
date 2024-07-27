@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://bu506fv4xr7e5"]
+[gd_scene load_steps=12 format=3 uid="uid://bu506fv4xr7e5"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_lonwx"]
 [ext_resource type="PackedScene" uid="uid://0mvk1fobbefx" path="res://scenes/slot.tscn" id="3_4jq0p"]
 [ext_resource type="PackedScene" uid="uid://ce4txtp5sdg6e" path="res://scenes/clickable_text.tscn" id="3_olj2j"]
 [ext_resource type="PackedScene" uid="uid://c3s0qk2jfmure" path="res://scenes/progress_bar.tscn" id="4_w04wk"]
+[ext_resource type="PackedScene" uid="uid://cgf57n5pwpywf" path="res://scenes/request.tscn" id="5_0unim"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pgm3m"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -24,7 +25,7 @@ albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots")]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests")]
 script = ExtResource("1_lonwx")
 refine_slot = NodePath("World/Refinery/RefineSlot")
 refine_button = NodePath("World/Refinery/RefineButton")
@@ -36,6 +37,7 @@ distill_progress = NodePath("World/Distillery/DistillProgressBar2")
 material_slots = [NodePath("World/Materials/MaterialSlot1"), NodePath("World/Materials/MaterialSlot2"), NodePath("World/Materials/MaterialSlot3"), NodePath("World/Materials/MaterialSlot4"), NodePath("World/Materials/MaterialSlot5"), NodePath("World/Materials/MaterialSlot6")]
 reagent_slots = [NodePath("World/Reagents/ReagentSlot1"), NodePath("World/Reagents/ReagentSlot2"), NodePath("World/Reagents/ReagentSlot3")]
 potion_slots = [NodePath("World/Potions/PotionSlot1"), NodePath("World/Potions/PotionSlot2"), NodePath("World/Potions/PotionSlot3")]
+requests = [NodePath("World/Requests/Request1"), NodePath("World/Requests/Request2"), NodePath("World/Requests/Request3")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ehwq6")
@@ -222,3 +224,14 @@ category = 2
 [node name="PotionSlot3" parent="World/Potions" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 4.14545, 0, 1.43483)
 category = 2
+
+[node name="Requests" type="Node3D" parent="World"]
+
+[node name="Request1" parent="World/Requests" instance=ExtResource("5_0unim")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.37659, 0, -4.08488)
+
+[node name="Request2" parent="World/Requests" instance=ExtResource("5_0unim")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00492904, 0, -4.08488)
+
+[node name="Request3" parent="World/Requests" instance=ExtResource("5_0unim")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.34978, 0, -4.08488)

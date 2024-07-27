@@ -12,6 +12,7 @@ var selected_slot: Slot
 @export var material_slots: Array[Slot]
 @export var reagent_slots: Array[Slot]
 @export var potion_slots: Array[Slot]
+@export var requests: Array[Request]
 
 func create_card(type:Constants.ID):
 	var info
@@ -41,11 +42,18 @@ func _ready():
 	
 	# Initialise Board State
 	refine_button.hide()
+	distill_button.hide()
+	for request in requests:
+		request.set_visibility(false)
 	
 	# Populate Hand
 	material_slots[0].assign_card(create_card(Constants.ID.HERB_HEALTH))
 	material_slots[1].assign_card(create_card(Constants.ID.HERB_HEALTH))
 	material_slots[2].assign_card(create_card(Constants.ID.HERB_HEALTH))
+	requests[0].assign_request(RequestData.create(
+		"Health Potion", Constants.ID.POTION_HEALTH, 5))
+	requests[1].assign_request(RequestData.create(
+		"Health Potion", Constants.ID.POTION_HEALTH, 3))
 
 func _process(delta):
 	if Input.is_action_just_pressed("mouse_right"):
@@ -99,6 +107,9 @@ func _on_click_button_signal(button):
 		distill_progress.start_timer(2.0)
 		distill_slot1.set_lock(true)
 		distill_slot2.set_lock(true)
+	for request in requests:
+		if button == request._reject_button:
+			request.set_visibility(false)
 
 func _on_progress_bar_complete_signal(bar):
 	if bar == refine_progress:
