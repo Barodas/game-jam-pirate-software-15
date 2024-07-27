@@ -102,12 +102,18 @@ theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOver/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 100
+theme_override_constants/separation = 60
 
 [node name="GameOverLabel" type="Label" parent="UI/GameOver/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 100
 text = "Game Over"
+
+[node name="DescriptionLabel" type="Label" parent="UI/GameOver/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Game Over"
+horizontal_alignment = 1
 
 [node name="ReturnToMenuButton" type="Button" parent="UI/GameOver/MarginContainer/VBoxContainer"]
 layout_mode = 2

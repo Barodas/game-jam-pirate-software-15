@@ -2,6 +2,7 @@ extends Node3D
 
 @onready var _ui = $UI
 @onready var _game_over_screen = $UI/GameOver
+@onready var _game_over_description_label = $UI/GameOver/MarginContainer/VBoxContainer/DescriptionLabel
 
 @export var refine_slot: Slot
 @export var refine_cost_label: Label3D
@@ -38,15 +39,20 @@ extends Node3D
 @export var event_options3_button: Button
 
 var selected_slot: Slot
+var turn: int = 1
 var energy_cap: int
 var energy: int
-var gold: int
 var renown: int
-var turn: int = 1
+var renown_gain: int
+var request_count: int
+var request_gain: int
+var gold: int
+var sales: int
+var expenses: int
+var tax: int
 var refine_cost: int = 1
 var distill_cost: int = 1
 var request_queue: Array[RequestData]
-var tax: int
 
 func create_card(type:Constants.ID):
 	var info
@@ -85,10 +91,15 @@ func set_energy(amount:int):
 		energy_label.set_modulate(Color(1,1,1))
 
 func set_gold(amount:int):
+	if amount > gold:
+		sales = amount - gold
+	else:
+		expenses = gold - amount
 	gold = amount
 	gold_label.text = "Gold: " + str(gold)
 
 func set_renown(amount:int):
+	renown_gain = amount - renown
 	renown = amount
 	renown_label.text = "Renown: " + str(renown)
 	if renown < 100:
@@ -122,10 +133,12 @@ func _ready():
 	end_turn_button.set_text("End Turn")
 	end_turn_button.set_hover_colour(Color(0,0,1))
 	energy_cap = 3
-	tax = 2
 	set_energy(energy_cap)
-	set_gold(4)
-	set_renown(100)
+	gold = 4
+	set_gold(gold)
+	tax = 2
+	renown = 100
+	set_renown(renown)
 	
 	add_material_card(create_card(Constants.ID.HERB_HEALTH))
 	add_material_card(create_card(Constants.ID.HERB_HEALTH))
@@ -194,7 +207,8 @@ func _on_click_button_signal(button):
 		if button == request._reject_button:
 			request.set_visibility(false)
 	if button == end_turn_button:
-		set_energy(energy_cap)
+		# Prepare end of turn stats
+		end_turn_button.hide()
 		for request in requests:
 			if request._slot.has_card():
 				if request._slot.card.data.type == request.data.type:
@@ -202,19 +216,27 @@ func _on_click_button_signal(button):
 				else:
 					set_renown(renown - request.data.renown)
 				set_gold(gold + request.data.gold)
+				request_count += 1
+				request_gain += 1
 				request._slot.card.queue_free()
 				request.data = null
 				request.set_visibility(false)
 		set_gold(gold - tax)
 		if gold <= 0:
-			game_over()
-		turn += 1
-		if turn == 2:
-			add_material_card(create_card(Constants.ID.HERB_MANA))
-			add_material_card(create_card(Constants.ID.HERB_MANA))
-			request_queue.push_back(RequestData.create(
-				"Mana Potion", Constants.TYPE.MANA, 5, 10))
-			populate_requests()
+			game_over("Out of Gold, The kingdom has taken your shop")
+		
+		# Populate summary page
+		summary_turn_label.text = "Turn: " + str(turn)
+		summary_request_label.text = "Requests fulfilled: " + str(request_count) + " (+" + str(request_gain) + ")"
+		if renown_gain >= 0:
+			summary_renown_label.text = "Renown: " + str(renown) + " (+" + str(renown_gain) + ")"
+		else:
+			summary_renown_label.text = "Renown: " + str(renown) + " (-" + str(renown_gain) + ")"
+		summary_sales_label.text = "Sales: " + str(sales)
+		summary_expense_label.text = "Expenses: " + str(expenses)
+		summary_tax_label.text = "Tax: " + str(tax)
+		summary_total_label.text = "Total: " + str(gold)
+		summary_page.show()
 
 func add_material_card(card:Card):
 	for slot in material_slots:
@@ -275,12 +297,27 @@ func distill_reagents(type1:Constants.TYPE, type2:Constants.TYPE):
 			slot.assign_card(new_card)
 			break
 
-func game_over():
+func game_over(description: String):
 	_ui.mouse_filter = Control.MOUSE_FILTER_STOP
+	_game_over_description_label.text = description
 	_game_over_screen.show()
 
 func _on_return_to_menu_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/start_menu.tscn")
 
 func _on_next_turn_button_pressed():
-	pass # Replace with function body.
+	summary_page.hide()
+	# Prepare next turn
+	turn += 1
+	renown_gain = 0
+	request_gain = 0
+	sales = 0
+	expenses = 0
+	set_energy(energy_cap)
+	if turn == 2:
+		add_material_card(create_card(Constants.ID.HERB_MANA))
+		add_material_card(create_card(Constants.ID.HERB_MANA))
+		request_queue.push_back(RequestData.create(
+			"Mana Potion", Constants.TYPE.MANA, 5, 10))
+		populate_requests()
+	end_turn_button.show()
