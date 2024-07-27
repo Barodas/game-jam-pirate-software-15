@@ -52,35 +52,8 @@ var expenses: int
 var tax: int
 var refine_cost: int = 1
 var distill_cost: int = 1
+var process_time: float = 1.5
 var request_queue: Array[RequestData]
-
-func create_card(type:Constants.ID):
-	var info
-	match type:
-		Constants.ID.HERB_HEALTH:
-			info = CardData.create("Green Herb",Constants.CATEGORY.MATERIAL,
-			 Constants.TYPE.HEALTH, 1, 0)
-		Constants.ID.HERB_MANA:
-			info = CardData.create("Blue Herb",Constants.CATEGORY.MATERIAL,
-			 Constants.TYPE.MANA, 1, 0)
-		Constants.ID.DUST_HEALTH:
-			info = CardData.create("Regenerating\n Dust",Constants.CATEGORY.REAGENT,
-			 Constants.TYPE.HEALTH, 1, 0)
-		Constants.ID.DUST_MANA:
-			info = CardData.create("Enervating\n Dust",Constants.CATEGORY.REAGENT,
-			 Constants.TYPE.MANA, 1, 0)
-		Constants.ID.POTION_HEALTH:
-			info = CardData.create("Health Potion",Constants.CATEGORY.POTION,
-			 Constants.TYPE.HEALTH, 1, 0)
-		Constants.ID.POTION_MANA:
-			info = CardData.create("Mana Potion",Constants.CATEGORY.POTION,
-			 Constants.TYPE.MANA, 1, 0)
-		Constants.ID.POTION_STAMINA:
-			info = CardData.create("Stamina Potion",Constants.CATEGORY.POTION,
-			 Constants.TYPE.STAMINA, 1, 0)
-	var new_card = Card.create(info)
-	add_child(new_card)
-	return new_card
 
 func set_energy(amount:int):
 	energy = amount
@@ -140,13 +113,17 @@ func _ready():
 	renown = 100
 	set_renown(renown)
 	
-	add_material_card(create_card(Constants.ID.HERB_HEALTH))
-	add_material_card(create_card(Constants.ID.HERB_HEALTH))
+	generate_turn_cards()
 	requests[0].assign_request(RequestData.create(
 		"Health Potion", Constants.TYPE.HEALTH, 5, 10))
 
+func generate_turn_cards():
+	var cards = ContentFactory.generate_cards(turn)
+	for card in cards:
+		add_to_slot(material_slots, card)
+
 func _process(delta):
-	if Input.is_action_just_pressed("mouse_right"):
+	if Input.is_action_just_pressed("mouse_right") && selected_slot != null:
 		selected_slot.select_slot(false)
 		selected_slot = null
 	
@@ -195,12 +172,12 @@ func _on_click_button_signal(button):
 	if button == refine_button:
 		if energy >= refine_cost:
 			set_energy(energy - refine_cost)
-			refine_progress.start_timer(2.0)
+			refine_progress.start_timer(process_time)
 			refine_slot.set_lock(true)
 	if button == distill_button:
 		if energy >= distill_cost:
 			set_energy(energy - distill_cost)
-			distill_progress.start_timer(2.0)
+			distill_progress.start_timer(process_time)
 			distill_slot1.set_lock(true)
 			distill_slot2.set_lock(true)
 	for request in requests:
@@ -238,12 +215,6 @@ func _on_click_button_signal(button):
 		summary_total_label.text = "Total: " + str(gold)
 		summary_page.show()
 
-func add_material_card(card:Card):
-	for slot in material_slots:
-		if !slot.has_card():
-			slot.assign_card(card)
-			break
-
 func populate_requests():
 	for request in requests:
 		if request.data == null:
@@ -269,32 +240,31 @@ func refine_material(type:Constants.TYPE):
 	var new_card
 	match type:
 		Constants.TYPE.HEALTH:
-			new_card = create_card(Constants.ID.DUST_HEALTH)
+			new_card = Card.create(ContentFactory.create_card_data(Constants.ID.DUST_HEALTH))
 		Constants.TYPE.MANA:
-			new_card = create_card(Constants.ID.DUST_MANA)
-	
-	for slot in reagent_slots:
-		if !slot.has_card():
-			slot.assign_card(new_card)
-			break
+			new_card = Card.create(ContentFactory.create_card_data(Constants.ID.DUST_MANA))
+	add_to_slot(reagent_slots, new_card)
 
 func distill_reagents(type1:Constants.TYPE, type2:Constants.TYPE):
 	var new_card
 	match type1:
 		Constants.TYPE.HEALTH:
 			if type2 == Constants.TYPE.HEALTH:
-				new_card = create_card(Constants.ID.POTION_HEALTH)
+				new_card = Card.create(ContentFactory.create_card_data(Constants.ID.POTION_HEALTH))
 			if type2 == Constants.TYPE.MANA:
-				new_card = create_card(Constants.ID.POTION_STAMINA)
+				new_card = Card.create(ContentFactory.create_card_data(Constants.ID.POTION_STAMINA))
 		Constants.TYPE.MANA:
 			if type2 == Constants.TYPE.MANA:
-				new_card = create_card(Constants.ID.POTION_MANA)
+				new_card = Card.create(ContentFactory.create_card_data(Constants.ID.POTION_MANA))
 			if type2 == Constants.TYPE.HEALTH:
-				new_card = create_card(Constants.ID.POTION_STAMINA)
-	
-	for slot in potion_slots:
+				new_card = Card.create(ContentFactory.create_card_data(Constants.ID.POTION_STAMINA))
+	add_to_slot(potion_slots, new_card)
+
+func add_to_slot(slots:Array[Slot], card: Card):
+	for slot in slots:
 		if !slot.has_card():
-			slot.assign_card(new_card)
+			add_child(card)
+			slot.assign_card(card)
 			break
 
 func game_over(description: String):
@@ -314,9 +284,8 @@ func _on_next_turn_button_pressed():
 	sales = 0
 	expenses = 0
 	set_energy(energy_cap)
+	generate_turn_cards()
 	if turn == 2:
-		add_material_card(create_card(Constants.ID.HERB_MANA))
-		add_material_card(create_card(Constants.ID.HERB_MANA))
 		request_queue.push_back(RequestData.create(
 			"Mana Potion", Constants.TYPE.MANA, 5, 10))
 		populate_requests()
