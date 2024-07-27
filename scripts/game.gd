@@ -1,5 +1,8 @@
 extends Node3D
 
+@onready var _ui = $UI
+@onready var _game_over_screen = $UI/GameOver
+
 @export var refine_slot: Slot
 @export var refine_cost_label: Label3D
 @export var refine_button: ClickableText
@@ -18,6 +21,22 @@ extends Node3D
 @export var gold_label: Label3D
 @export var renown_label: Label3D
 
+@export var summary_page: MarginContainer
+@export var summary_turn_label: Label
+@export var summary_request_label: Label
+@export var summary_renown_label: Label
+@export var summary_sales_label: Label
+@export var summary_expense_label: Label
+@export var summary_tax_label: Label
+@export var summary_total_label: Label
+
+@export var event_page: MarginContainer
+@export var event_title_label: Label
+@export var event_contents_label: Label
+@export var event_options1_button: Button
+@export var event_options2_button: Button
+@export var event_options3_button: Button
+
 var selected_slot: Slot
 var energy_cap: int
 var energy: int
@@ -27,6 +46,7 @@ var turn: int = 1
 var refine_cost: int = 1
 var distill_cost: int = 1
 var request_queue: Array[RequestData]
+var tax: int
 
 func create_card(type:Constants.ID):
 	var info
@@ -91,6 +111,10 @@ func _ready():
 	Signals.progress_bar_complete.connect(_on_progress_bar_complete_signal)
 	
 	# Initialise Board State
+	_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_game_over_screen.hide()
+	summary_page.hide()
+	event_page.hide()
 	refine_button.hide()
 	distill_button.hide()
 	for request in requests:
@@ -98,17 +122,15 @@ func _ready():
 	end_turn_button.set_text("End Turn")
 	end_turn_button.set_hover_colour(Color(0,0,1))
 	energy_cap = 3
+	tax = 2
 	set_energy(energy_cap)
-	set_gold(0)
+	set_gold(4)
 	set_renown(100)
 	
-	material_slots[0].assign_card(create_card(Constants.ID.HERB_HEALTH))
-	material_slots[1].assign_card(create_card(Constants.ID.HERB_HEALTH))
-	#material_slots[2].assign_card(create_card(Constants.ID.HERB_HEALTH))
+	add_material_card(create_card(Constants.ID.HERB_HEALTH))
+	add_material_card(create_card(Constants.ID.HERB_HEALTH))
 	requests[0].assign_request(RequestData.create(
 		"Health Potion", Constants.TYPE.HEALTH, 5, 10))
-	#requests[1].assign_request(RequestData.create(
-		#"Health Potion", Constants.ID.POTION_HEALTH, 3, 10))
 
 func _process(delta):
 	if Input.is_action_just_pressed("mouse_right"):
@@ -183,6 +205,9 @@ func _on_click_button_signal(button):
 				request._slot.card.queue_free()
 				request.data = null
 				request.set_visibility(false)
+		set_gold(gold - tax)
+		if gold <= 0:
+			game_over()
 		turn += 1
 		if turn == 2:
 			add_material_card(create_card(Constants.ID.HERB_MANA))
@@ -250,5 +275,12 @@ func distill_reagents(type1:Constants.TYPE, type2:Constants.TYPE):
 			slot.assign_card(new_card)
 			break
 
+func game_over():
+	_ui.mouse_filter = Control.MOUSE_FILTER_STOP
+	_game_over_screen.show()
+
 func _on_return_to_menu_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/start_menu.tscn")
+
+func _on_next_turn_button_pressed():
+	pass # Replace with function body.

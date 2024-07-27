@@ -25,7 +25,7 @@ albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_cost_label", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_cost_label", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests", "end_turn_button", "energy_label", "gold_label", "renown_label")]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_cost_label", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_cost_label", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests", "end_turn_button", "energy_label", "gold_label", "renown_label", "summary_page", "summary_turn_label", "summary_request_label", "summary_renown_label", "summary_sales_label", "summary_expense_label", "summary_tax_label", "summary_total_label", "event_page", "event_title_label", "event_contents_label", "event_options1_button", "event_options2_button", "event_options3_button")]
 script = ExtResource("1_lonwx")
 refine_slot = NodePath("World/Refinery/RefineSlot")
 refine_cost_label = NodePath("World/Refinery/RefineCostLabel")
@@ -44,6 +44,20 @@ end_turn_button = NodePath("World/EndTurnButton")
 energy_label = NodePath("World/EnergyLabel")
 gold_label = NodePath("World/GoldLabel")
 renown_label = NodePath("World/RenownLabel")
+summary_page = NodePath("UI/TurnSummary")
+summary_turn_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/TurnLabel")
+summary_request_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/RequestLabel")
+summary_renown_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/RenownLabel")
+summary_sales_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/SalesLabel")
+summary_expense_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/ExpenseLabel")
+summary_tax_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/TaxLabel")
+summary_total_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/TotalLabel")
+event_page = NodePath("UI/EventPage")
+event_title_label = NodePath("UI/EventPage/MarginContainer/VBoxContainer/TitleLabel")
+event_contents_label = NodePath("UI/EventPage/MarginContainer/VBoxContainer/ContentsLabel")
+event_options1_button = NodePath("UI/EventPage/MarginContainer/VBoxContainer/OptionButton1")
+event_options2_button = NodePath("UI/EventPage/MarginContainer/VBoxContainer/OptionButton2")
+event_options3_button = NodePath("UI/EventPage/MarginContainer/VBoxContainer/OptionButton3")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ehwq6")
@@ -99,6 +113,143 @@ text = "Game Over"
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Return to Menu"
+
+[node name="TurnSummary" type="MarginContainer" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -292.5
+offset_top = -163.5
+offset_right = 292.5
+offset_bottom = 163.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="UI/TurnSummary"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/TurnSummary"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/TurnSummary/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Turn Summary"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="TurnLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Turn No: x"
+
+[node name="RequestLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Requests Fulfilled: x + y"
+
+[node name="RenownLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Renown: x + y"
+
+[node name="GoldLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Gold:"
+
+[node name="SalesLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "- Sales: x"
+
+[node name="ExpenseLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "- Expenses: x"
+
+[node name="TaxLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "- Tax: x"
+
+[node name="TotalLabel" type="Label" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "- Total: x"
+
+[node name="NextTurnButton" type="Button" parent="UI/TurnSummary/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Next Turn"
+
+[node name="EventPage" type="MarginContainer" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -292.5
+offset_top = -163.5
+offset_right = 292.5
+offset_bottom = 163.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="UI/EventPage"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/EventPage"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/EventPage/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="UI/EventPage/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Event Title"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="ContentsLabel" type="Label" parent="UI/EventPage/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Contents of event"
+
+[node name="OptionButton1" type="Button" parent="UI/EventPage/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Option 1"
+
+[node name="OptionButton2" type="Button" parent="UI/EventPage/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Option 2"
+
+[node name="OptionButton3" type="Button" parent="UI/EventPage/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Option 3"
 
 [node name="World" type="Node3D" parent="."]
 
@@ -279,3 +430,6 @@ uppercase = true
 
 [node name="EndTurnButton" parent="World" instance=ExtResource("3_olj2j")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.97963, 0, -0.3634)
+
+[connection signal="pressed" from="UI/GameOver/MarginContainer/VBoxContainer/ReturnToMenuButton" to="." method="_on_return_to_menu_button_pressed"]
+[connection signal="pressed" from="UI/TurnSummary/MarginContainer/VBoxContainer/NextTurnButton" to="." method="_on_next_turn_button_pressed"]
