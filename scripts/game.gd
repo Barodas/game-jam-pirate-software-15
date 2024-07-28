@@ -50,11 +50,21 @@ var gold: int
 var sales: int
 var expenses: int
 var tax: int
+var refine_level: int = 1
 var refine_cost: int = 1
+var refine_upgrade_multiplier = 1
+var free_refine_cap = 0
+var free_refine_count
+var distill_level:int = 1
 var distill_cost: int = 1
+var distill_upgrade_multiplier = 1
+var free_distill_cap = 0
+var free_distill_count
 var process_time: float = 1.5
 var request_queue: Array[RequestData]
 var current_event: TurnEvent
+var draw_amount = 3
+var next_draw_cards: Array[CardData]
 
 func set_energy(amount:int):
 	energy = amount
@@ -66,14 +76,14 @@ func set_energy(amount:int):
 
 func set_gold(amount:int):
 	if amount > gold:
-		sales = amount - gold
+		sales = sales + (amount - gold)
 	else:
-		expenses = gold - amount
+		expenses = expenses - (gold - amount)
 	gold = amount
 	gold_label.text = "Gold: " + str(gold)
 
 func set_renown(amount:int):
-	renown_gain = amount - renown
+	renown_gain = renown_gain + (amount - renown)
 	renown = amount
 	renown_label.text = "Renown: " + str(renown)
 	if renown < 100:
@@ -110,12 +120,10 @@ func _ready():
 	set_energy(energy_cap)
 	gold = 4
 	set_gold(gold)
-	tax = 2
+	tax = 0
 	renown = 100
 	set_renown(renown)
 	
-	#generate_turn_cards()
-	#generate_turn_requests()
 	assign_turn_event(ContentFactory.generate_turn_event(turn))
 
 func next_turn():
@@ -125,13 +133,16 @@ func next_turn():
 	request_gain = 0
 	sales = 0
 	expenses = 0
+	free_refine_count = free_refine_cap
+	free_distill_count = free_distill_cap
 	set_energy(energy_cap)
 	generate_turn_cards()
 	generate_turn_requests()
+	next_draw_cards.clear()
 	end_turn_button.show()
 
 func generate_turn_cards():
-	var cards = ContentFactory.generate_cards(turn)
+	var cards = ContentFactory.generate_cards(turn, draw_amount, next_draw_cards)
 	for card in cards:
 		add_to_slot(material_slots, card)
 
@@ -149,15 +160,26 @@ func _process(delta):
 	if refine_slot.has_card():
 		refine_button.show()
 		refine_cost_label.show()
-		refine_cost_label.text = "Cost:\n" + str(refine_cost) + " Energy"
+		if refine_slot.card.data.type == Constants.TYPE.UPGRADE_REFINE:
+			refine_cost_label.text = "Cost:\n" + str(get_refine_cost()) + " Energy\n" + str(refine_slot.card.data.gold * refine_upgrade_multiplier) + " Gold"
+		else:
+			refine_cost_label.text = "Cost:\n" + str(get_refine_cost()) + " Energy"
 	else:
 		refine_button.hide()
 		refine_cost_label.hide()
 	
-	if distill_slot1.has_card() && distill_slot2.has_card():
+	if distill_slot1.has_card() && distill_slot2.has_card() && distill_slot1.card.data.category != Constants.CATEGORY.UPGRADE && distill_slot2.card.data.category != Constants.CATEGORY.UPGRADE:
 		distill_button.show()
 		distill_cost_label.show()
-		distill_cost_label.text = "Cost:\n" + str(distill_cost) + " Energy"
+		distill_cost_label.text = "Cost:\n" + str(get_distill_cost()) + " Energy"
+	elif distill_slot1.has_card() && distill_slot1.card.data.category == Constants.CATEGORY.UPGRADE:
+		distill_button.show()
+		distill_cost_label.show()
+		distill_cost_label.text = "Cost:\n" + str(get_distill_cost()) + " Energy\n" + str(distill_slot1.card.data.gold * distill_upgrade_multiplier) + " Gold"
+	elif distill_slot2.has_card() && distill_slot2.card.data.category == Constants.CATEGORY.UPGRADE:
+		distill_button.show()
+		distill_cost_label.show()
+		distill_cost_label.text = "Cost:\n" + str(get_distill_cost()) + " Energy\n" + str(distill_slot2.card.data.gold * distill_upgrade_multiplier) + " Gold"
 	else:
 		distill_button.hide()
 		distill_cost_label.hide()
@@ -171,7 +193,7 @@ func _on_click_slot_signal(slot):
 		selected_slot = slot
 		slot.select_slot(true)
 	elif selected_slot != null && selected_slot != slot:
-		if slot.category != selected_slot.category:
+		if !valid_slot_category(selected_slot.card, slot):
 			print("Category mismatch between selection and target slots")
 		elif slot.has_card():
 			print("Swapping selected slot: ", selected_slot.name, " with slot: ", slot.name)
@@ -187,18 +209,76 @@ func _on_click_slot_signal(slot):
 			selected_slot.select_slot(false)
 			selected_slot = null
 
+func valid_slot_category(card, target_slot):
+	# Regular cards just match on category
+	if card.data.category != Constants.CATEGORY.UPGRADE:
+		return card.data.category == target_slot.category
+	# Upgrade cards must check if they are allowed
+	match target_slot.upgrade:
+		Constants.ALLOW_UPGRADE.NONE:
+			return false
+		Constants.ALLOW_UPGRADE.REFINE:
+			return card.data.type == Constants.TYPE.UPGRADE_REFINE
+		Constants.ALLOW_UPGRADE.DISTILL:
+			return card.data.type == Constants.TYPE.UPGRADE_DISTILL
+		Constants.ALLOW_UPGRADE.ANY:
+			return true
+
+func get_refine_cost(consume_cost = false):
+	var cost
+	if free_refine_count > 0:
+		cost = 0
+	else:
+		cost = refine_cost
+	if consume_cost:
+		free_refine_count -= 1
+	return cost
+
+func get_distill_cost(consume_cost = false):
+	var cost
+	if free_distill_count > 0:
+		cost = 0
+	else:
+		cost = distill_cost
+	if consume_cost:
+		free_distill_count -= 1
+	return cost
+
 func _on_click_button_signal(button):
 	if button == refine_button:
 		if energy >= refine_cost:
-			set_energy(energy - refine_cost)
-			refine_progress.start_timer(process_time)
-			refine_slot.set_lock(true)
+			if refine_slot.card.data.category == Constants.CATEGORY.UPGRADE:
+				var cost = refine_slot.card.data.gold * refine_upgrade_multiplier
+				if gold >= cost:
+					set_energy(energy - get_refine_cost(true))
+					set_gold(gold - cost)
+					refine_progress.start_timer(process_time)
+					refine_slot.set_lock(true)
+			else:
+				set_energy(energy - get_refine_cost(true))
+				refine_progress.start_timer(process_time)
+				refine_slot.set_lock(true)
 	if button == distill_button:
 		if energy >= distill_cost:
-			set_energy(energy - distill_cost)
-			distill_progress.start_timer(process_time)
-			distill_slot1.set_lock(true)
-			distill_slot2.set_lock(true)
+			if distill_slot1.card.data.category == Constants.CATEGORY.UPGRADE:
+				var cost = distill_slot1.card.data.gold * distill_upgrade_multiplier
+				if gold >= cost:
+					set_energy(energy - get_distill_cost(true))
+					set_gold(gold - cost)
+					distill_progress.start_timer(process_time)
+					distill_slot1.set_lock(true)
+			elif distill_slot2.card.data.category == Constants.CATEGORY.UPGRADE:
+				var cost = distill_slot2.card.data.gold * distill_upgrade_multiplier
+				if gold >= cost:
+					set_energy(energy - get_distill_cost(true))
+					set_gold(gold - cost)
+					distill_progress.start_timer(process_time)
+					distill_slot2.set_lock(true)
+			else:
+				set_energy(energy - get_distill_cost(true))
+				distill_progress.start_timer(process_time)
+				distill_slot1.set_lock(true)
+				distill_slot2.set_lock(true)
 	for request in requests:
 		if button == request._reject_button:
 			request.data = null
@@ -247,15 +327,41 @@ func _on_progress_bar_complete_signal(bar):
 	if bar == refine_progress:
 		if refine_slot.has_card():
 			refine_slot.set_lock(false)
-			refine_material(refine_slot.card.data.type)
-			refine_slot.card.queue_free()
+			if refine_slot.card.data.category == Constants.CATEGORY.UPGRADE:
+				refine_upgrade_multiplier += 1
+				refine_level += 1
+				apply_refine_upgrade()
+				refine_slot.card.queue_free()
+			else:
+				refine_material(refine_slot.card.data.type)
+				refine_slot.card.queue_free()
 	if bar == distill_progress:
-		if distill_slot1.has_card() && distill_slot2.has_card():
-			distill_slot1.set_lock(false)
-			distill_slot2.set_lock(false)
+		distill_slot1.set_lock(false)
+		distill_slot2.set_lock(false)
+		if distill_slot1.has_card() && distill_slot2.has_card() && distill_slot1.card.data.category != Constants.CATEGORY.UPGRADE && distill_slot2.card.data.category != Constants.CATEGORY.UPGRADE:
 			distill_reagents(distill_slot1.card.data.type, distill_slot2.card.data.type)
 			distill_slot1.card.queue_free()
 			distill_slot2.card.queue_free()
+		elif distill_slot1.has_card() && distill_slot1.card.data.category == Constants.CATEGORY.UPGRADE:
+			distill_upgrade_multiplier += 1
+			distill_level += 1
+			apply_distill_upgrade()
+			distill_slot1.card.queue_free()
+		elif distill_slot2.has_card() && distill_slot2.card.data.category == Constants.CATEGORY.UPGRADE:
+			distill_upgrade_multiplier += 1
+			distill_level += 1
+			apply_distill_upgrade()
+			distill_slot2.card.queue_free()
+
+func apply_refine_upgrade():
+	match refine_level:
+		2:
+			free_refine_cap = 1
+
+func apply_distill_upgrade():
+	match distill_level:
+		2:
+			free_distill_cap = 1
 
 func refine_material(type:Constants.TYPE):
 	var new_card
@@ -324,12 +430,20 @@ func assign_turn_event(event:TurnEvent):
 
 func _on_option_button_1_pressed():
 	event_page.hide()
+	process_event(current_event.event_type, current_event.card1)
 	next_turn()
 
 func _on_option_button_2_pressed():
 	event_page.hide()
+	process_event(current_event.event_type, current_event.card2)
 	next_turn()
 
 func _on_option_button_3_pressed():
 	event_page.hide()
+	process_event(current_event.event_type, current_event.card3)
 	next_turn()
+
+func process_event(type:Constants.EVENT_TYPE, card_data:CardData):
+	match type:
+		Constants.EVENT_TYPE.ADD_CARD:
+			next_draw_cards.push_back(card_data)

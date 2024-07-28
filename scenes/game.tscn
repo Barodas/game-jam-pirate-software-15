@@ -78,51 +78,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="GameOver" type="MarginContainer" parent="UI"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -292.5
-offset_top = -163.5
-offset_right = 292.5
-offset_bottom = 163.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Panel" type="Panel" parent="UI/GameOver"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/GameOver"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOver/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 60
-
-[node name="GameOverLabel" type="Label" parent="UI/GameOver/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 100
-text = "Game Over"
-
-[node name="DescriptionLabel" type="Label" parent="UI/GameOver/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "Game Over"
-horizontal_alignment = 1
-
-[node name="ReturnToMenuButton" type="Button" parent="UI/GameOver/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "Return to Menu"
-
 [node name="TurnSummary" type="MarginContainer" parent="UI"]
 visible = false
 layout_mode = 1
@@ -269,6 +224,51 @@ theme_override_font_sizes/font_size = 25
 text = "Option 3"
 alignment = 0
 
+[node name="GameOver" type="MarginContainer" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -292.5
+offset_top = -194.5
+offset_right = 292.5
+offset_bottom = 194.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="UI/GameOver"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameOver"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOver/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 60
+
+[node name="GameOverLabel" type="Label" parent="UI/GameOver/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 100
+text = "Game Over"
+
+[node name="DescriptionLabel" type="Label" parent="UI/GameOver/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Game Over"
+horizontal_alignment = 1
+
+[node name="ReturnToMenuButton" type="Button" parent="UI/GameOver/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Return to Menu"
+
 [node name="World" type="Node3D" parent="."]
 
 [node name="GameBoard" type="MeshInstance3D" parent="World"]
@@ -289,6 +289,7 @@ transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 
 
 [node name="RefineSlot" parent="World/Refinery" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -3.62523, 0, -0.979769)
+upgrade = 2
 
 [node name="RefineLabel" type="Label3D" parent="World/Refinery"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2.2, 0.01, -1.6)
@@ -316,10 +317,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.15, 0, -0.15)
 [node name="DistillSlot1" parent="World/Distillery" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 0.359278, 0, -0.979769)
 category = 1
+upgrade = 3
 
 [node name="DistillSlot2" parent="World/Distillery" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 1.74258, 0, -0.979769)
 category = 1
+upgrade = 3
 
 [node name="DistillLabel" type="Label3D" parent="World/Distillery"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 3.1, 0.01, -1.6)
@@ -354,21 +357,27 @@ uppercase = true
 
 [node name="MaterialSlot1" parent="World/Materials" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -3.3, 0, 3.6)
+upgrade = 1
 
 [node name="MaterialSlot2" parent="World/Materials" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -1.9, 0, 3.6)
+upgrade = 1
 
 [node name="MaterialSlot3" parent="World/Materials" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, -0.5, 0, 3.6)
+upgrade = 1
 
 [node name="MaterialSlot4" parent="World/Materials" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 0.902987, 0, 3.6)
+upgrade = 1
 
 [node name="MaterialSlot5" parent="World/Materials" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 2.32014, 0, 3.6)
+upgrade = 1
 
 [node name="MaterialSlot6" parent="World/Materials" instance=ExtResource("3_4jq0p")]
 transform = Transform3D(1.2, 0, 0, 0, 0.02, 0, 0, 0, 1.7, 3.6986, 0, 3.6)
+upgrade = 1
 
 [node name="Reagents" type="Node3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33, 0, 0)
@@ -449,8 +458,8 @@ uppercase = true
 [node name="EndTurnButton" parent="World" instance=ExtResource("3_olj2j")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.97963, 0, -0.3634)
 
-[connection signal="pressed" from="UI/GameOver/MarginContainer/VBoxContainer/ReturnToMenuButton" to="." method="_on_return_to_menu_button_pressed"]
 [connection signal="pressed" from="UI/TurnSummary/MarginContainer/VBoxContainer/NextTurnButton" to="." method="_on_next_turn_button_pressed"]
 [connection signal="pressed" from="UI/EventPage/MarginContainer/VBoxContainer/OptionButton1" to="." method="_on_option_button_1_pressed"]
 [connection signal="pressed" from="UI/EventPage/MarginContainer/VBoxContainer/OptionButton2" to="." method="_on_option_button_2_pressed"]
 [connection signal="pressed" from="UI/EventPage/MarginContainer/VBoxContainer/OptionButton3" to="." method="_on_option_button_3_pressed"]
+[connection signal="pressed" from="UI/GameOver/MarginContainer/VBoxContainer/ReturnToMenuButton" to="." method="_on_return_to_menu_button_pressed"]
