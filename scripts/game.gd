@@ -6,11 +6,13 @@ extends Node3D
 
 @export var refine_slot: Slot
 @export var refine_cost_label: Label3D
+@export var refine_level_label: Label3D
 @export var refine_button: ClickableText
 @export var refine_progress: ProgressBar3D
 @export var distill_slot1: Slot
 @export var distill_slot2: Slot
 @export var distill_cost_label: Label3D
+@export var distill_level_label: Label3D
 @export var distill_button: ClickableText
 @export var distill_progress: ProgressBar3D
 @export var material_slots: Array[Slot]
@@ -253,10 +255,12 @@ func _on_click_button_signal(button):
 					set_energy(energy - get_refine_cost(true))
 					set_gold(gold - cost)
 					refine_progress.start_timer(process_time)
+					end_turn_button.hide()
 					refine_slot.set_lock(true)
 			else:
 				set_energy(energy - get_refine_cost(true))
 				refine_progress.start_timer(process_time)
+				end_turn_button.hide()
 				refine_slot.set_lock(true)
 	if button == distill_button:
 		if energy >= distill_cost:
@@ -266,6 +270,7 @@ func _on_click_button_signal(button):
 					set_energy(energy - get_distill_cost(true))
 					set_gold(gold - cost)
 					distill_progress.start_timer(process_time)
+					end_turn_button.hide()
 					distill_slot1.set_lock(true)
 			elif distill_slot2.card.data.category == Constants.CATEGORY.UPGRADE:
 				var cost = distill_slot2.card.data.gold * distill_upgrade_multiplier
@@ -273,10 +278,12 @@ func _on_click_button_signal(button):
 					set_energy(energy - get_distill_cost(true))
 					set_gold(gold - cost)
 					distill_progress.start_timer(process_time)
+					end_turn_button.hide()
 					distill_slot2.set_lock(true)
 			else:
 				set_energy(energy - get_distill_cost(true))
 				distill_progress.start_timer(process_time)
+				end_turn_button.hide()
 				distill_slot1.set_lock(true)
 				distill_slot2.set_lock(true)
 	for request in requests:
@@ -324,6 +331,7 @@ func populate_requests():
 				request.assign_request(data)
 
 func _on_progress_bar_complete_signal(bar):
+	end_turn_button.show()
 	if bar == refine_progress:
 		if refine_slot.has_card():
 			refine_slot.set_lock(false)
@@ -354,11 +362,13 @@ func _on_progress_bar_complete_signal(bar):
 			distill_slot2.card.queue_free()
 
 func apply_refine_upgrade():
+	refine_level_label.text = "Lv " + str(refine_level)
 	match refine_level:
 		2:
 			free_refine_cap = 1
 
 func apply_distill_upgrade():
+	distill_level_label.text = "Lv " + str(distill_level)
 	match distill_level:
 		2:
 			free_distill_cap = 1

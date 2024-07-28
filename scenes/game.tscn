@@ -28,15 +28,17 @@ albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_cost_label", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_cost_label", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests", "end_turn_button", "energy_label", "gold_label", "renown_label", "summary_page", "summary_turn_label", "summary_request_label", "summary_renown_label", "summary_sales_label", "summary_expense_label", "summary_tax_label", "summary_total_label", "event_page", "event_title_label", "event_contents_label", "event_options1_button", "event_options2_button", "event_options3_button")]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_cost_label", "refine_level_label", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_cost_label", "distill_level_label", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests", "end_turn_button", "energy_label", "gold_label", "renown_label", "summary_page", "summary_turn_label", "summary_request_label", "summary_renown_label", "summary_sales_label", "summary_expense_label", "summary_tax_label", "summary_total_label", "event_page", "event_title_label", "event_contents_label", "event_options1_button", "event_options2_button", "event_options3_button")]
 script = ExtResource("1_lonwx")
 refine_slot = NodePath("World/Refinery/RefineSlot")
 refine_cost_label = NodePath("World/Refinery/RefineCostLabel")
+refine_level_label = NodePath("World/Refinery/RefineLevelLabel")
 refine_button = NodePath("World/Refinery/RefineButton")
 refine_progress = NodePath("World/Refinery/RefineProgressBar")
 distill_slot1 = NodePath("World/Distillery/DistillSlot1")
 distill_slot2 = NodePath("World/Distillery/DistillSlot2")
 distill_cost_label = NodePath("World/Distillery/DistillCostLabel")
+distill_level_label = NodePath("World/Distillery/DistillLevelLabel")
 distill_button = NodePath("World/Distillery/DistillButton")
 distill_progress = NodePath("World/Distillery/DistillProgressBar2")
 material_slots = [NodePath("World/Materials/MaterialSlot1"), NodePath("World/Materials/MaterialSlot2"), NodePath("World/Materials/MaterialSlot3"), NodePath("World/Materials/MaterialSlot4"), NodePath("World/Materials/MaterialSlot5"), NodePath("World/Materials/MaterialSlot6")]
@@ -299,6 +301,13 @@ font_size = 40
 outline_size = 10
 uppercase = true
 
+[node name="RefineLevelLabel" type="Label3D" parent="World/Refinery"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -3.63968, 0.01, -0.428076)
+text = "Lv 1"
+font_size = 40
+outline_size = 10
+uppercase = true
+
 [node name="RefineCostLabel" type="Label3D" parent="World/Refinery"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2.2, 0.01, -0.81762)
 text = "Cost: 
@@ -328,6 +337,13 @@ upgrade = 3
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 3.1, 0.01, -1.6)
 text = "Distill
 Reagents"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="DistillLevelLabel" type="Label3D" parent="World/Distillery"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.73102, 0.01, -0.42795)
+text = "LV 1"
 font_size = 40
 outline_size = 10
 uppercase = true
