@@ -65,3 +65,33 @@ static func generate_requests(turn:int):
 		for i in 2:
 			requests.push_back(get_random_request())
 	return requests
+
+static func generate_turn_event(turn:int):
+	if turn == 0:
+		return TurnEvent.create("Opening Day!", 
+			"""It's taken a lot of work but the day is finally here.
+			
+			Refine MATERIALS into REAGENTS, then Distill them into
+			a POTION. Place the Potion in the Requests slot and
+			END TURN to turn it in.""", "Got it!")
+	if turn == 1:
+		return TurnEvent.create("More variety!", 
+		"""There's more to alchemy than just Health Potions. 
+		Blue Herbs can be refined into a dust for creating 
+		Mana Potions.
+		
+		Customers can't tell at a glance what your potion does. 
+		While you CAN sell them something different to what they 
+		asked for, it will have a negative effect on your 
+		reputation (RENOWN).
+		
+		Alchemists with a good reputation will attract higher 
+		paying customers!""", "Got it!")
+	if turn == 2:
+		return TurnEvent.create("Upgrades!", 
+		"""Sometimes you will find a MATERIAL that can be used to upgrade 
+		a part of your shop. These upgrades can do things like provide a 
+		free craft each turn, or a chance to create additional outputs.
+		
+		The cost can be steep, but the benefit will pay off over later turns.""", "I think I'll upgrade the Refining Station", "The Distilling Station could use an upgrade")
+	return null

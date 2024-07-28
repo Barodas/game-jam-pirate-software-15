@@ -39,7 +39,7 @@ extends Node3D
 @export var event_options3_button: Button
 
 var selected_slot: Slot
-var turn: int = 1
+var turn: int = 0
 var energy_cap: int
 var energy: int
 var renown: int
@@ -54,6 +54,7 @@ var refine_cost: int = 1
 var distill_cost: int = 1
 var process_time: float = 1.5
 var request_queue: Array[RequestData]
+var current_event: TurnEvent
 
 func set_energy(amount:int):
 	energy = amount
@@ -113,8 +114,21 @@ func _ready():
 	renown = 100
 	set_renown(renown)
 	
+	#generate_turn_cards()
+	#generate_turn_requests()
+	assign_turn_event(ContentFactory.generate_turn_event(turn))
+
+func next_turn():
+	# Prepare next turn
+	turn += 1
+	renown_gain = 0
+	request_gain = 0
+	sales = 0
+	expenses = 0
+	set_energy(energy_cap)
 	generate_turn_cards()
 	generate_turn_requests()
+	end_turn_button.show()
 
 func generate_turn_cards():
 	var cards = ContentFactory.generate_cards(turn)
@@ -284,17 +298,38 @@ func _on_return_to_menu_button_pressed():
 
 func _on_next_turn_button_pressed():
 	summary_page.hide()
-	# Prepare next turn
-	turn += 1
-	renown_gain = 0
-	request_gain = 0
-	sales = 0
-	expenses = 0
-	set_energy(energy_cap)
-	generate_turn_cards()
-	generate_turn_requests()
-	#if turn == 2:
-		#request_queue.push_back(RequestData.create(
-			#"Mana Potion", Constants.TYPE.MANA, 5, 10))
-		#populate_requests()
-	end_turn_button.show()
+	
+	var turn_event = ContentFactory.generate_turn_event(turn)
+	if turn_event != null:
+		assign_turn_event(turn_event)
+	else:
+		next_turn()
+
+func assign_turn_event(event:TurnEvent):
+	current_event = event
+	event_title_label.text = event.title
+	event_contents_label.text = event.content
+	event_options1_button.text = event.button_text1
+	if !event.button_text2.is_empty():
+		event_options2_button.text = event.button_text2
+		event_options2_button.show()
+	else:
+		event_options2_button.hide()
+	if !event.button_text3.is_empty():
+		event_options3_button.text = event.button_text3
+		event_options3_button.show()
+	else:
+		event_options3_button.hide()
+	event_page.show()
+
+func _on_option_button_1_pressed():
+	event_page.hide()
+	next_turn()
+
+func _on_option_button_2_pressed():
+	event_page.hide()
+	next_turn()
+
+func _on_option_button_3_pressed():
+	event_page.hide()
+	next_turn()
