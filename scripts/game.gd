@@ -23,6 +23,7 @@ extends Node3D
 @export var energy_label: Label3D
 @export var gold_label: Label3D
 @export var renown_label: Label3D
+@export var tax_label: Label3D
 
 @export var summary_page: MarginContainer
 @export var summary_turn_label: Label
@@ -83,6 +84,13 @@ func set_gold(amount:int):
 		expenses = expenses - (gold - amount)
 	gold = amount
 	gold_label.text = "Gold: " + str(gold)
+	if gold <= 0:
+		gold_label.set_modulate(Color(1,0,0))
+
+func set_tax(amount:int):
+	tax = amount
+	tax_label.text = "Tax: " + str(tax)
+	tax_label.show() if tax > 0 else tax_label.hide()
 
 func set_renown(amount:int):
 	renown_gain = renown_gain + (amount - renown)
@@ -142,6 +150,7 @@ func next_turn():
 	generate_turn_requests()
 	next_draw_cards.clear()
 	end_turn_button.show()
+	_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func generate_turn_cards():
 	var cards = ContentFactory.generate_cards(turn, draw_amount, next_draw_cards)
@@ -324,6 +333,7 @@ func _on_click_button_signal(button):
 		set_gold(gold - tax)
 		if gold <= 0:
 			game_over("Out of Gold, The kingdom has taken your shop")
+			return
 		
 		# Populate summary page
 		summary_turn_label.text = "Turn: " + str(turn)
@@ -336,6 +346,7 @@ func _on_click_button_signal(button):
 		summary_expense_label.text = "Expenses: " + str(expenses)
 		summary_tax_label.text = "Tax: " + str(tax)
 		summary_total_label.text = "Total: " + str(gold)
+		_ui.mouse_filter = Control.MOUSE_FILTER_STOP
 		summary_page.show()
 
 func populate_requests():
@@ -422,6 +433,8 @@ func add_to_slot(slots:Array[Slot], card: Card):
 func game_over(description: String):
 	_ui.mouse_filter = Control.MOUSE_FILTER_STOP
 	_game_over_description_label.text = description
+	summary_page.hide()
+	event_page.hide()
 	_game_over_screen.show()
 
 func _on_return_to_menu_button_pressed():
@@ -455,20 +468,22 @@ func assign_turn_event(event:TurnEvent):
 
 func _on_option_button_1_pressed():
 	event_page.hide()
-	process_event(current_event.event_type, current_event.card1)
+	process_event(current_event.event_type, current_event.card1, current_event.value1)
 	next_turn()
 
 func _on_option_button_2_pressed():
 	event_page.hide()
-	process_event(current_event.event_type, current_event.card2)
+	process_event(current_event.event_type, current_event.card2, current_event.value2)
 	next_turn()
 
 func _on_option_button_3_pressed():
 	event_page.hide()
-	process_event(current_event.event_type, current_event.card3)
+	process_event(current_event.event_type, current_event.card3, current_event.value3)
 	next_turn()
 
-func process_event(type:Constants.EVENT_TYPE, card_data:CardData):
+func process_event(type:Constants.EVENT_TYPE, card_data:CardData, value: int):
 	match type:
 		Constants.EVENT_TYPE.ADD_CARD:
 			next_draw_cards.push_back(card_data)
+		Constants.EVENT_TYPE.ADJUST_TAX:
+			set_tax(tax + value)

@@ -11,8 +11,11 @@ var button_text3: String
 var card1: CardData
 var card2: CardData
 var card3: CardData
+var value1: int
+var value2: int
+var value3: int
 
-static func create(type:Constants.EVENT_TYPE, title:String, content:String, button1:String, button2:String = "", button3:String = "", card1 = null, card2 = null, card3 = null):
+static func create(type:Constants.EVENT_TYPE, title:String, content:String, button1:String, button2:String = "", button3:String = "", card1 = null, card2 = null, card3 = null, val1 = 0, val2 = 0, val3 = 0):
 	var event = TurnEvent.new()
 	event.event_type = type
 	event.title = title
@@ -23,4 +26,7 @@ static func create(type:Constants.EVENT_TYPE, title:String, content:String, butt
 	event.card1 = card1
 	event.card2 = card2
 	event.card3 = card3
+	event.value1 = val1
+	event.value2 = val2
+	event.value3 = val3
 	return event

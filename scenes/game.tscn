@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bu506fv4xr7e5"]
+[gd_scene load_steps=14 format=3 uid="uid://bu506fv4xr7e5"]
 
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_lonwx"]
 [ext_resource type="PackedScene" uid="uid://0mvk1fobbefx" path="res://scenes/slot.tscn" id="3_4jq0p"]
@@ -21,6 +21,9 @@ tonemap_mode = 2
 [sub_resource type="LabelSettings" id="LabelSettings_b676h"]
 font_size = 25
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sa76x"]
+bg_color = Color(0, 0, 0, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_m024c"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o8cp0"]
@@ -28,7 +31,7 @@ albedo_color = Color(0.169245, 0.169245, 0.169245, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tut34"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_cost_label", "refine_level_label", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_cost_label", "distill_level_label", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests", "end_turn_button", "energy_label", "gold_label", "renown_label", "summary_page", "summary_turn_label", "summary_request_label", "summary_renown_label", "summary_sales_label", "summary_expense_label", "summary_tax_label", "summary_total_label", "event_page", "event_title_label", "event_contents_label", "event_options1_button", "event_options2_button", "event_options3_button")]
+[node name="Game" type="Node3D" node_paths=PackedStringArray("refine_slot", "refine_cost_label", "refine_level_label", "refine_button", "refine_progress", "distill_slot1", "distill_slot2", "distill_cost_label", "distill_level_label", "distill_button", "distill_progress", "material_slots", "reagent_slots", "potion_slots", "requests", "end_turn_button", "energy_label", "gold_label", "renown_label", "tax_label", "summary_page", "summary_turn_label", "summary_request_label", "summary_renown_label", "summary_sales_label", "summary_expense_label", "summary_tax_label", "summary_total_label", "event_page", "event_title_label", "event_contents_label", "event_options1_button", "event_options2_button", "event_options3_button")]
 script = ExtResource("1_lonwx")
 refine_slot = NodePath("World/Refinery/RefineSlot")
 refine_cost_label = NodePath("World/Refinery/RefineCostLabel")
@@ -49,6 +52,7 @@ end_turn_button = NodePath("World/EndTurnButton")
 energy_label = NodePath("World/EnergyLabel")
 gold_label = NodePath("World/GoldLabel")
 renown_label = NodePath("World/RenownLabel")
+tax_label = NodePath("World/TaxLabel")
 summary_page = NodePath("UI/TurnSummary")
 summary_turn_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/TurnLabel")
 summary_request_label = NodePath("UI/TurnSummary/MarginContainer/VBoxContainer/RequestLabel")
@@ -227,7 +231,6 @@ text = "Option 3"
 alignment = 0
 
 [node name="GameOver" type="MarginContainer" parent="UI"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -243,6 +246,7 @@ grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="UI/GameOver"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sa76x")
 
 [node name="MarginContainer" type="MarginContainer" parent="UI/GameOver"]
 layout_mode = 2
@@ -259,6 +263,7 @@ theme_override_constants/separation = 60
 layout_mode = 2
 theme_override_font_sizes/font_size = 100
 text = "Game Over"
+horizontal_alignment = 1
 
 [node name="DescriptionLabel" type="Label" parent="UI/GameOver/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -467,6 +472,14 @@ uppercase = true
 [node name="RenownLabel" type="Label3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 4.97542, 0.01, -1.64106)
 text = "Renown: 0"
+font_size = 40
+outline_size = 10
+uppercase = true
+
+[node name="TaxLabel" type="Label3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 4.97542, 0.01, -1.97066)
+visible = false
+text = "Tax: 0"
 font_size = 40
 outline_size = 10
 uppercase = true

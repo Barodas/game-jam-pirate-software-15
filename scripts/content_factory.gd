@@ -108,4 +108,14 @@ static func generate_turn_event(turn:int):
 		"The Distilling Station could use an upgrade", "", 
 		create_card_data(Constants.ID.UPGRADE_REFINE), 
 		create_card_data(Constants.ID.UPGRADE_DISTILL))
+	if turn == 3:
+		return TurnEvent.create(Constants.EVENT_TYPE.ADJUST_TAX, "Taxes...", 
+		"""By order of his Majesty! Shops on the Merchant Road will be 
+		subject to a tax to help pay for maintenance and security of 
+		the area. 
+		
+		Failure to pay will result in immediate shop closure and expulsion
+		from the city!""", 
+		"Better make sure we have enough funds to cover this...", "", "", 
+		null, null, null, 2)
 	return null
