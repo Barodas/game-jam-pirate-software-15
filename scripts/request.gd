@@ -1,6 +1,7 @@
 class_name Request extends Node3D
 
 @onready var _background = $Background
+@onready var _duration_label = $Background/DurationLabel
 @onready var _request_label = $Background/RequestLabel
 @onready var _gold_label = $Background/GoldLabel
 @onready var _renown_label = $Background/RenownLabel
@@ -25,9 +26,13 @@ func set_visibility(state:bool):
 	else:
 		_background.hide()
 
+func update_duration():
+	_duration_label.text = str(data.duration)
+
 func assign_request(assigned_request: RequestData):
 	data = assigned_request
 	_request_label.text = data.name
 	_gold_label.text = "Gold: " + str(data.gold)
 	_renown_label.text = "Renown: " + str(data.renown)
+	update_duration()
 	set_visibility(true)

@@ -149,6 +149,21 @@ func generate_turn_cards():
 		add_to_slot(material_slots, card)
 
 func generate_turn_requests():
+	# Update durations, clear out expired requests
+	for request in requests:
+		if request.data == null:
+			continue
+		request.data.duration -= 1
+		request.update_duration()
+		if request.data.duration <= 0:
+			request.data = null
+			request.set_visibility(false)
+	for request in request_queue:
+		request.duration -= 1
+		if request.duration <= 0:
+			request_queue.erase(request)
+	
+	# Generate new requests for the turn
 	var new_requests = ContentFactory.generate_requests(turn)
 	for request in new_requests:
 		request_queue.push_back(request)

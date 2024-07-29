@@ -58,20 +58,21 @@ static func generate_cards(turn:int, amount:int, reserved_draws:Array[CardData])
 static func get_random_request():
 	var roll = randf_range(0,1)
 	if roll > 0.6:
-		return RequestData.create("Health Potion", Constants.TYPE.HEALTH, 4, 10)
+		return RequestData.create("Health Potion", Constants.TYPE.HEALTH, 4, 8, 3)
 	elif roll > 0.2:
-		return RequestData.create("Mana Potion", Constants.TYPE.MANA, 6, 10)
+		return RequestData.create("Mana Potion", Constants.TYPE.MANA, 6, 12, 2)
 	else:
-		return RequestData.create("Stamina Potion", Constants.TYPE.STAMINA, 10, 20)
+		return RequestData.create("Stamina Potion", Constants.TYPE.STAMINA, 10, 20, 2)
 
 static func generate_requests(turn:int):
 	var requests: Array[RequestData]
 	if turn == 1:
-		requests.push_back(RequestData.create("Health Potion", Constants.TYPE.HEALTH, 5, 10))
+		requests.push_back(RequestData.create("Health Potion", Constants.TYPE.HEALTH, 5, 10, 2))
 	if turn == 2:
-		requests.push_back(RequestData.create("Mana Potion", Constants.TYPE.MANA, 5, 10))
+		requests.push_back(RequestData.create("Mana Potion", Constants.TYPE.MANA, 5, 10, 2))
 	if turn >= 3:
-		for i in 2:
+		var amount = randi_range(1,2)
+		for i in amount:
 			requests.push_back(get_random_request())
 	return requests
 

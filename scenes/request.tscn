@@ -29,6 +29,13 @@ text = "Request
 font_size = 60
 outline_size = 10
 
+[node name="DurationLabel" type="Label3D" parent="Background"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.30831, 0.06, -1.5)
+text = "1
+"
+font_size = 60
+outline_size = 10
+
 [node name="RequestLabel" type="Label3D" parent="Background"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.377, 0.06, -0.9)
 text = "Health Potion
