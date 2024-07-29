@@ -66,8 +66,10 @@ var free_distill_count
 var process_time: float = 1.5
 var request_queue: Array[RequestData]
 var current_event: TurnEvent
-var draw_amount = 3
+var card_draw_amount = 3
 var next_draw_cards: Array[CardData]
+var request_draw_amount = 2
+var next_draw_requests: Array[RequestData]
 
 func set_energy(amount:int):
 	energy = amount
@@ -115,6 +117,9 @@ func _ready():
 	Signals.click_button.connect(_on_click_button_signal)
 	Signals.progress_bar_complete.connect(_on_progress_bar_complete_signal)
 	
+	# Testing: REMOVE BEFORE BUILD!!!
+	turn = 6
+	
 	# Initialise Board State
 	_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_game_over_screen.hide()
@@ -153,7 +158,7 @@ func next_turn():
 	_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func generate_turn_cards():
-	var cards = ContentFactory.generate_cards(turn, draw_amount, next_draw_cards)
+	var cards = ContentFactory.generate_cards(turn, card_draw_amount, next_draw_cards)
 	for card in cards:
 		add_to_slot(material_slots, card)
 
@@ -173,7 +178,7 @@ func generate_turn_requests():
 			request_queue.erase(request)
 	
 	# Generate new requests for the turn
-	var new_requests = ContentFactory.generate_requests(turn)
+	var new_requests = ContentFactory.generate_requests(turn, randi_range(1, request_draw_amount), next_draw_requests)
 	for request in new_requests:
 		request_queue.push_back(request)
 	populate_requests()
@@ -468,22 +473,29 @@ func assign_turn_event(event:TurnEvent):
 
 func _on_option_button_1_pressed():
 	event_page.hide()
-	process_event(current_event.event_type, current_event.card1, current_event.value1)
+	process_event(current_event.event_type, current_event.card1, current_event.value1, current_event.request1)
 	next_turn()
 
 func _on_option_button_2_pressed():
 	event_page.hide()
-	process_event(current_event.event_type, current_event.card2, current_event.value2)
+	process_event(current_event.event_type, current_event.card2, current_event.value2, current_event.request2)
 	next_turn()
 
 func _on_option_button_3_pressed():
 	event_page.hide()
-	process_event(current_event.event_type, current_event.card3, current_event.value3)
+	process_event(current_event.event_type, current_event.card3, current_event.value3, current_event.request3)
 	next_turn()
 
-func process_event(type:Constants.EVENT_TYPE, card_data:CardData, value: int):
+func process_event(type:Constants.EVENT_TYPE, card_data:CardData, value: int, request_data:RequestData):
 	match type:
 		Constants.EVENT_TYPE.ADD_CARD:
-			next_draw_cards.push_back(card_data)
+			var amount = 1 if value <= 1 else value
+			for i in amount:
+				next_draw_cards.push_back(card_data)
 		Constants.EVENT_TYPE.ADJUST_TAX:
 			set_tax(tax + value)
+		Constants.EVENT_TYPE.ADD_REQUEST:
+			var amount = 1 if value <= 1 else value
+			for i in amount:
+				print("requests added to queue")
+				next_draw_requests.push_back(request_data)

@@ -64,15 +64,17 @@ static func get_random_request():
 	else:
 		return RequestData.create("Stamina Potion", Constants.TYPE.STAMINA, 10, 20, 2)
 
-static func generate_requests(turn:int):
+static func generate_requests(turn:int, amount:int, reserved_requests:Array[RequestData]):
 	var requests: Array[RequestData]
 	if turn == 1:
 		requests.push_back(RequestData.create("Health Potion", Constants.TYPE.HEALTH, 5, 10, 2))
 	if turn == 2:
 		requests.push_back(RequestData.create("Mana Potion", Constants.TYPE.MANA, 5, 10, 2))
 	if turn >= 3:
-		var amount = randi_range(1,2)
-		for i in amount:
+		for data in reserved_requests:
+			requests.push_back(data)
+		var random_draws = amount - reserved_requests.size()
+		for i in random_draws:
 			requests.push_back(get_random_request())
 	return requests
 
@@ -118,4 +120,19 @@ static func generate_turn_event(turn:int):
 		from the city!""", 
 		"Better make sure we have enough funds to cover this...", "", "", 
 		null, null, null, 2)
+	if turn == 4:
+		return TurnEvent.create(Constants.EVENT_TYPE.INFO, "Unrest!", 
+		"""The introduction of the Merchant Road tax has left many 
+		people upset at the king. 
+		
+		Rumours suggest the tax isn't for maintaining the area, and
+		is instead to be used to bolster the military.""", 
+		"Time will tell...")
+	if turn == 6:
+		return TurnEvent.create(Constants.EVENT_TYPE.ADD_REQUEST, "Special Request: Health Potions!", 
+		"""Urgent requests have been sent to all alchemists for Health Potions.
+		The requests come with a sizeable payment if fulfilled.""", 
+		"Rumours of an impending conflict may be true after all...", "", "", 
+		null, null, null, 2, 0, 0, 
+		RequestData.create("Health Potion", Constants.TYPE.HEALTH, 20, 15, 2))
 	return null
