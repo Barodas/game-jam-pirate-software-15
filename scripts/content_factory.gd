@@ -55,16 +55,21 @@ static func generate_cards(turn:int, amount:int, reserved_draws:Array[CardData])
 			cards.push_back(Card.create(create_card_data(get_random_material())))
 	return cards
 
-static func get_random_request():
+static func get_random_request(renown:int):
+	var modifier: float = 1
+	if renown > 200:
+		modifier = 2
+	elif renown > 150:
+		modifier = 1.5
 	var roll = randf_range(0,1)
 	if roll > 0.6:
-		return RequestData.create("Health Potion", Constants.TYPE.HEALTH, 4, 8, 3)
+		return RequestData.create("Health Potion", Constants.TYPE.HEALTH, 4 * modifier, 8, 3)
 	elif roll > 0.2:
-		return RequestData.create("Mana Potion", Constants.TYPE.MANA, 6, 12, 2)
+		return RequestData.create("Mana Potion", Constants.TYPE.MANA, 6 * modifier, 12, 2)
 	else:
-		return RequestData.create("Stamina Potion", Constants.TYPE.STAMINA, 10, 20, 2)
+		return RequestData.create("Stamina Potion", Constants.TYPE.STAMINA, 10 * modifier, 20, 2)
 
-static func generate_requests(turn:int, amount:int, reserved_requests:Array[RequestData]):
+static func generate_requests(turn:int, amount:int, reserved_requests:Array[RequestData], renown:int):
 	var requests: Array[RequestData]
 	if turn == 1:
 		requests.push_back(RequestData.create("Health Potion", Constants.TYPE.HEALTH, 5, 10, 2))
@@ -75,7 +80,7 @@ static func generate_requests(turn:int, amount:int, reserved_requests:Array[Requ
 			requests.push_back(data)
 		var random_draws = amount - reserved_requests.size()
 		for i in random_draws:
-			requests.push_back(get_random_request())
+			requests.push_back(get_random_request(renown))
 	return requests
 
 static func generate_turn_event(turn:int):
@@ -111,15 +116,16 @@ static func generate_turn_event(turn:int):
 		create_card_data(Constants.ID.UPGRADE_REFINE), 
 		create_card_data(Constants.ID.UPGRADE_DISTILL))
 	if turn == 3:
+		var amount = 2
 		return TurnEvent.create(Constants.EVENT_TYPE.ADJUST_TAX, "Taxes...", 
 		"""By order of his Majesty! Shops on the Merchant Road will be 
-		subject to a tax to help pay for maintenance and security of 
-		the area. 
+		subject to a """ + str(amount) + """ gold tax to help pay for 
+		maintenance and security of the area. 
 		
 		Failure to pay will result in immediate shop closure and expulsion
 		from the city!""", 
 		"Better make sure we have enough funds to cover this...", "", "", 
-		null, null, null, 2)
+		null, null, null, amount)
 	if turn == 4:
 		return TurnEvent.create(Constants.EVENT_TYPE.INFO, "Unrest!", 
 		"""The introduction of the Merchant Road tax has left many 
@@ -135,4 +141,46 @@ static func generate_turn_event(turn:int):
 		"Rumours of an impending conflict may be true after all...", "", "", 
 		null, null, null, 2, 0, 0, 
 		RequestData.create("Health Potion", Constants.TYPE.HEALTH, 20, 15, 2))
+	if turn == 8:
+		var amount = 3
+		return TurnEvent.create(Constants.EVENT_TYPE.ADJUST_TAX, "Tax Increase!", 
+		"""By order of his Majesty! Effective immediately, due to continued
+		disruptions in the area, the Merchant Road tax will be increased by an 
+		additional """ + str(amount) + """ gold.
+		
+		Failure to pay will result in immediate shop closure and expulsion
+		from the city!""", 
+		"Ridiculous...", "", "", 
+		null, null, null, amount)
+	if turn == 10:
+		return TurnEvent.create(Constants.EVENT_TYPE.INFO, "Riots!", 
+		"""The tax increases have caused many stores in the poorer sections of 
+		the city to close. Shortages as a result have led to riots in these areas.
+		
+		The king has ordered the military to maintain order in the city, 
+		resulting in conflicts on the streets.""", 
+		"Things are getting out of hand...")
+	if turn == 11:
+		return TurnEvent.create(Constants.EVENT_TYPE.INFO, "Escape?", 
+		"""There are rumours of another tax increase. At this rate we won't be 
+		able keep the shop running.	Maybe it's time to get out of here.
+		
+		We could leverage our reputation, or raise enough funds to buy passage 
+		out of the city to somewhere less dangerous
+		
+		VICTORY CONDITIONS NOW AVAILABLE:
+		- Raise reputation to 300 or,
+		- End a turn with at least 300 Gold""", 
+		"We need to get out of here!")
+	if turn == 13:
+		var amount = 4
+		return TurnEvent.create(Constants.EVENT_TYPE.ADJUST_TAX, "Tax Increase!", 
+		"""By order of his Majesty! Effective immediately, due to continued
+		unrest across the city, the Merchant Road tax will be increased by an 
+		additional """ + str(amount) + """ gold.
+		
+		Failure to pay will result in immediate shop closure and expulsion
+		from the city!""", 
+		"So the rumours were true...", "", "", 
+		null, null, null, amount)
 	return null

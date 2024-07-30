@@ -231,6 +231,7 @@ text = "Option 3"
 alignment = 0
 
 [node name="GameOver" type="MarginContainer" parent="UI"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

@@ -2,6 +2,7 @@ extends Node3D
 
 @onready var _ui = $UI
 @onready var _game_over_screen = $UI/GameOver
+@onready var _game_over_title_label = $UI/GameOver/MarginContainer/VBoxContainer/GameOverLabel
 @onready var _game_over_description_label = $UI/GameOver/MarginContainer/VBoxContainer/DescriptionLabel
 
 @export var refine_slot: Slot
@@ -118,7 +119,7 @@ func _ready():
 	Signals.progress_bar_complete.connect(_on_progress_bar_complete_signal)
 	
 	# Testing: REMOVE BEFORE BUILD!!!
-	turn = 6
+	#turn = 6
 	
 	# Initialise Board State
 	_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -154,6 +155,7 @@ func next_turn():
 	generate_turn_cards()
 	generate_turn_requests()
 	next_draw_cards.clear()
+	next_draw_requests.clear()
 	end_turn_button.show()
 	_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -178,7 +180,7 @@ func generate_turn_requests():
 			request_queue.erase(request)
 	
 	# Generate new requests for the turn
-	var new_requests = ContentFactory.generate_requests(turn, randi_range(1, request_draw_amount), next_draw_requests)
+	var new_requests = ContentFactory.generate_requests(turn, randi_range(1, request_draw_amount), next_draw_requests, renown)
 	for request in new_requests:
 		request_queue.push_back(request)
 	populate_requests()
@@ -336,8 +338,31 @@ func _on_click_button_signal(button):
 				request.data = null
 				request.set_visibility(false)
 		set_gold(gold - tax)
+		# Check for game over
 		if gold <= 0:
-			game_over("Out of Gold, The kingdom has taken your shop")
+			game_over("Game Over", "Out of Gold, The kingdom has taken your shop")
+			return
+		# Check for victory
+		if renown >= 300:
+			var desc = """You leverage your contacts to negotiate safe passage 
+						out of the city.
+						
+						Final Stats:
+						- Gold: """ + str(gold) + """
+						- Renown: """ + str(renown) + """
+						- Requests Completed: """ + str(request_count)
+			game_over("Victory!", desc)
+			return
+		elif gold >= 300:
+			var desc = """It was expensive, but with enough gold to grease the 
+						right palms you manage to negotiate safe passage out of 
+						the city.
+						
+						Final Stats:
+						- Gold: """ + str(gold) + """
+						- Renown: """ + str(renown) + """
+						- Requests Completed: """ + str(request_count)
+			game_over("Victory!", desc)
 			return
 		
 		# Populate summary page
@@ -347,10 +372,10 @@ func _on_click_button_signal(button):
 			summary_renown_label.text = "Renown: " + str(renown) + " (+" + str(renown_gain) + ")"
 		else:
 			summary_renown_label.text = "Renown: " + str(renown) + " (-" + str(renown_gain) + ")"
-		summary_sales_label.text = "Sales: " + str(sales)
-		summary_expense_label.text = "Expenses: " + str(expenses)
-		summary_tax_label.text = "Tax: " + str(tax)
-		summary_total_label.text = "Total: " + str(gold)
+		summary_sales_label.text = "- Sales: " + str(sales)
+		summary_expense_label.text = "- Expenses: " + str(expenses)
+		summary_tax_label.text = "- Tax: " + str(tax)
+		summary_total_label.text = "- Total: " + str(gold)
 		_ui.mouse_filter = Control.MOUSE_FILTER_STOP
 		summary_page.show()
 
@@ -435,8 +460,9 @@ func add_to_slot(slots:Array[Slot], card: Card):
 			slot.assign_card(card)
 			break
 
-func game_over(description: String):
+func game_over(title: String, description: String):
 	_ui.mouse_filter = Control.MOUSE_FILTER_STOP
+	_game_over_title_label.text = title
 	_game_over_description_label.text = description
 	summary_page.hide()
 	event_page.hide()
