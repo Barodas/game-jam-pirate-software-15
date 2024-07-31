@@ -1,6 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cfcyp6ygd7myq"]
+[gd_scene load_steps=13 format=3 uid="uid://cfcyp6ygd7myq"]
 
 [ext_resource type="Script" path="res://scripts/card.gd" id="1_5kcb4"]
+[ext_resource type="PackedScene" uid="uid://bkko8lg0c1q1v" path="res://scenes/bottle.tscn" id="2_rnfu0"]
+[ext_resource type="Material" uid="uid://baadku8ri13sn" path="res://scenes/bottle_blue.tres" id="3_6jkln"]
+[ext_resource type="PackedScene" uid="uid://bavtr0ioi2dca" path="res://models/Dust01.glb" id="3_fcutl"]
+[ext_resource type="Material" uid="uid://ciktnjr82n7yh" path="res://scenes/bottle_green.tres" id="4_vcg7f"]
+[ext_resource type="PackedScene" uid="uid://cneytorxrlqtj" path="res://models/Leaf01.glb" id="5_d2tin"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_55re0"]
 
@@ -22,6 +27,8 @@ albedo_color = Color(1, 0, 0, 1)
 transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1.5, 0, 0, 0)
 mesh = SubResource("BoxMesh_55re0")
 script = ExtResource("1_5kcb4")
+mat_green = ExtResource("4_vcg7f")
+mat_blue = ExtResource("3_6jkln")
 
 [node name="NameLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.51, -0.473)
@@ -61,3 +68,23 @@ mesh = SubResource("BoxMesh_clpln")
 transform = Transform3D(1.15, 0, 0, 0, 0.8, 0, 0, 0, 1.15, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_7fmmv")
 mesh = SubResource("BoxMesh_clpln")
+
+[node name="Bottle" parent="." instance=ExtResource("2_rnfu0")]
+transform = Transform3D(0.635796, 0, -0.0945998, 0, 1, 0, 0.135143, 0, 0.445057, -0.091119, 0.580525, 0.151609)
+visible = false
+
+[node name="Dust" parent="." instance=ExtResource("3_fcutl")]
+transform = Transform3D(1, 0, 0, 0, -3.10351e-08, 1, 0, -0.71, -4.37114e-08, -0.0267194, 0.625, 0.093451)
+
+[node name="Dust" parent="Dust" index="0"]
+material_override = ExtResource("4_vcg7f")
+
+[node name="Leaf" parent="." instance=ExtResource("5_d2tin")]
+transform = Transform3D(0.838671, 0.386694, 2.38069e-08, 0, -3.10351e-08, 1, 0.544639, -0.595456, -3.66595e-08, -0.0901419, 0.625, 0.119042)
+
+[node name="Leaf" parent="Leaf" index="0"]
+transform = Transform3D(1, 0, 1.11022e-16, 0, 1, -2.22045e-16, -3.55271e-15, 8.88178e-15, 0.0773381, 0.0142256, -0.0623912, 0)
+material_override = ExtResource("4_vcg7f")
+
+[editable path="Dust"]
+[editable path="Leaf"]

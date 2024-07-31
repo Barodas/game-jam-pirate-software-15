@@ -228,6 +228,11 @@ func _on_click_slot_signal(slot):
 	elif selected_slot != null && selected_slot != slot:
 		if !valid_slot_category(selected_slot.card, slot):
 			print("Category mismatch between selection and target slots")
+			if slot.has_card():
+				selected_slot.select_slot(false)
+				selected_slot = slot
+				slot.select_slot(true)
+				print("Target slot has a card, swap selection to it")
 		elif slot.has_card():
 			print("Swapping selected slot: ", selected_slot.name, " with slot: ", slot.name)
 			var card_to_swap = slot.card

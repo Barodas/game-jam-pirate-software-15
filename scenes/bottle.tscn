@@ -1,0 +1,32 @@
+[gd_scene load_steps=8 format=3 uid="uid://bkko8lg0c1q1v"]
+
+[ext_resource type="PackedScene" uid="uid://bcfk5lcds538a" path="res://models/Bottle01.glb" id="1_r4o62"]
+[ext_resource type="Script" path="res://scripts/bottle.gd" id="1_rnnpr"]
+[ext_resource type="PackedScene" uid="uid://cvdjjtj0t1wvc" path="res://models/Cork01.glb" id="2_la3ei"]
+[ext_resource type="Material" uid="uid://ciktnjr82n7yh" path="res://scenes/bottle_green.tres" id="2_psx5b"]
+[ext_resource type="Material" uid="uid://baadku8ri13sn" path="res://scenes/bottle_blue.tres" id="3_5rwt4"]
+[ext_resource type="Material" uid="uid://c6xupb71kn6lu" path="res://scenes/bottle_yellow.tres" id="3_8xyne"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pnrp4"]
+albedo_color = Color(0.476737, 0.237577, 4.81308e-08, 1)
+
+[node name="Bottle" type="Node3D"]
+script = ExtResource("1_rnnpr")
+mat_green = ExtResource("2_psx5b")
+mat_blue = ExtResource("3_5rwt4")
+mat_yellow = ExtResource("3_8xyne")
+
+[node name="Bottle01" parent="." instance=ExtResource("1_r4o62")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+
+[node name="Bottle1" parent="Bottle01" index="0"]
+material_override = ExtResource("3_8xyne")
+
+[node name="Cork01" parent="." instance=ExtResource("2_la3ei")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+
+[node name="Cork" parent="Cork01" index="0"]
+material_override = SubResource("StandardMaterial3D_pnrp4")
+
+[editable path="Bottle01"]
+[editable path="Cork01"]

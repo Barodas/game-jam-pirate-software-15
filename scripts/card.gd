@@ -1,11 +1,18 @@
 class_name Card extends MeshInstance3D
 
+@export var mat_green: Material
+@export var mat_blue: Material
+@export var mat_yellow: Material
+
 @onready var _name_label = $NameLabel
 @onready var _energy_label = $EnergyLabel
 @onready var _gold_label = $GoldLabel
 @onready var _border_highlight = $BorderHighlight
 @onready var _border_selected = $BorderSelected
 @onready var _border_locked = $BorderLocked
+@onready var _bottle = $Bottle
+@onready var _dust = $Dust/Dust
+@onready var _leaf = $Leaf/Leaf
 
 var data
 var is_hovered = false
@@ -19,10 +26,35 @@ static func create(info: CardData):
 	return instance
 
 func _ready():
+	_bottle.hide()
+	_dust.hide()
+	_leaf.hide()
 	if data:
 		_name_label.text = data.name
 		_energy_label.text = "Energy: " + str(data.energy)
 		_gold_label.text = "Gold: " + str(data.gold)
+		match data.name:
+			"Green Herb":
+				_leaf.show()
+				_leaf.material_override = mat_green
+			"Blue Herb":
+				_leaf.show()
+				_leaf.material_override = mat_blue
+			"Regenerating\n Dust":
+				_dust.show()
+				_dust.material_override = mat_green
+			"Enervating\n Dust":
+				_dust.show()
+				_dust.material_override = mat_blue
+			"Health Potion":
+				_bottle.show()
+				_bottle.set_colour(Constants.BOTTLE_COLOUR.GREEN)
+			"Mana Potion":
+				_bottle.show()
+				_bottle.set_colour(Constants.BOTTLE_COLOUR.BLUE)
+			"Stamina Potion":
+				_bottle.show()
+				_bottle.set_colour(Constants.BOTTLE_COLOUR.YELLOW)
 		print("Initialised a ", data.name, " Card")
 
 func _process(delta):

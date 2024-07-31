@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7p8w3a4d7a73"]
+[gd_scene load_steps=9 format=3 uid="uid://b7p8w3a4d7a73"]
 
 [ext_resource type="Script" path="res://scripts/start_menu.gd" id="1_23olp"]
+[ext_resource type="PackedScene" uid="uid://bkko8lg0c1q1v" path="res://scenes/bottle.tscn" id="2_ng1ad"]
+[ext_resource type="Material" uid="uid://baadku8ri13sn" path="res://scenes/bottle_blue.tres" id="3_jofl7"]
+[ext_resource type="PackedScene" uid="uid://cneytorxrlqtj" path="res://models/Leaf01.glb" id="4_hgroj"]
+[ext_resource type="Material" uid="uid://ciktnjr82n7yh" path="res://scenes/bottle_green.tres" id="5_dhvpw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qnh52"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_4gc42"]
+sky_material = SubResource("ProceduralSkyMaterial_qnh52")
+
+[sub_resource type="Environment" id="Environment_wqkw4"]
+background_mode = 2
+sky = SubResource("Sky_4gc42")
+tonemap_mode = 2
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
@@ -10,6 +26,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_23olp")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_wqkw4")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
 
 [node name="Title" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -137,6 +160,26 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Quit"
 
+[node name="Bottle" parent="." instance=ExtResource("2_ng1ad")]
+transform = Transform3D(0.984171, 0, -0.177222, 0, 1, 0, 0.177222, 0, 0.984171, 0.0967162, 0, 0)
+
+[node name="Bottle1" parent="Bottle/Bottle01" index="0"]
+material_override = ExtResource("3_jofl7")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.6, -0.5)
+
+[node name="Leaf01" parent="." instance=ExtResource("4_hgroj")]
+transform = Transform3D(1.20317, -0.601165, -2.62778e-08, 0, -5.87918e-08, 1.345, -0.601165, -1.20317, -5.25924e-08, 0, 0.0531435, -0.0199313)
+
+[node name="Leaf" parent="Leaf01" index="0"]
+material_override = ExtResource("5_dhvpw")
+
 [connection signal="pressed" from="Buttons/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="Buttons/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="Buttons/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+
+[editable path="Bottle"]
+[editable path="Bottle/Bottle01"]
+[editable path="Bottle/Cork01"]
+[editable path="Leaf01"]
